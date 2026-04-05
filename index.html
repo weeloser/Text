@@ -58,7 +58,7 @@ header{display:flex;align-items:center;justify-content:space-between;padding:28p
 .card:hover{border-color:var(--b2)}
 @keyframes up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 .left .card:nth-child(1){animation-delay:.05s}.left .card:nth-child(2){animation-delay:.10s}.left .card:nth-child(3){animation-delay:.16s}
-.right .card:nth-child(1){animation-delay:.08s}.right .card:nth-child(2){animation-delay:.14s}
+.right .card:nth-child(1){animation-delay:.08s}.right .card:nth-child(2){animation-delay:.14s}.right .card:nth-child(3){animation-delay:.20s}
 
 .ctitle{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.22em;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
 .ctitle .badge{font-family:'DM Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0;color:var(--dim)}
@@ -190,6 +190,11 @@ header{display:flex;align-items:center;justify-content:space-between;padding:28p
 
     <div class="right">
 
+      <div class="card">
+        <div class="ctitle">Копирование (Клик = Буфер обмена)</div>
+        <div class="pgrid" id="tpgrid"></div>
+      </div>
+
       <div class="card tcard">
         <div class="ctitle" style="margin-bottom:12px">Ваше сообщение</div>
         <textarea id="mainText" class="mtext" rows="2" oninput="update()" placeholder="Напишите текст...">Текст</textarea>
@@ -246,6 +251,15 @@ const PRESETS=[
   {n:'🌿 Листья',   c:['#1a3300','#336600','#66bb00','#99dd00','#ccff44']},
 ];
 
+const TEXT_PRESETS=[
+  {n:'👑 Князь (Я)', t:'!&e &d &e &d &e &d &e &d &e &4 &4 &4 &f &f &f &f &f &f &f &b &f &b &f &b &f &b &f &b &c &e &f &e &f &e &f &c &e &b &d &b &a &d &3&6&f&#fc97fc[&#a80000&lКнязь &eweeloser &7> &eЯ&#fc97fc] qq'},
+  {n:'💸 Перевод', t:'!&e &d &e &d &e &d &e &d &e &4 &4 &4 &f &f &f &f &f &f &f &b &f &b &f &b &f &b &f &b &c &e &f &e &f &e &f &e &f &c &f &f &e &b &a &d &d &f&4 &f &f&6 &3&6&f&a[$] &fОт игрока &ename &fполучено &a+$1.000.000'},
+  {n:'⚡ Запрос ТП', t:'!&e &d &e &d &e &d &e &d &e &4 &4 &4 &f &f &f &f &f &f &f &b &f &b &f &b &f &b &f &b &c &e &f &e &f &e &f &e &f &c &e &b &d &b &a &f &d &c &e &d&6 [&] &fВы отправили запaрос на телепортацию к &ename&f. &e &d &e &d &e &d &e &4 &4 &4 &b &4[Отменить телепорт]'},
+  {n:'📶 Выс. Пинг', t:'!&0acacacacacacacacacacacacacacacacaaccacacacacccacacaca&aВаш пинг: &e2149. &e&d &e &d &e &d &e &d &e &4 &4 &4 &f &f &f &f &f &f &f &b &f &b &f &b &f &b &f &b &c &e &f &e &f &e &f &e &f &c &b &d &e &b &d &b &a &d &4 &6 &3 &4&d &b &7Отключение от сервера...'},
+  {n:'💤 AFK', t:'!&0 &e &d &e &d &e &d &e &d &e &4 &4 &4 &f &f &f &f &f &f &f &b &f &b &f &b &f &b &f &b &c &e &f &e &f &e &f &e &f &c &e &b &d &b &a &d &4 &6 &3 &4&d &7Вы отошли.'},
+  {n:'🛒 Фейк Покупка', t:'!&e &d &e &d &e &d &e &d &e &4 &4 &4 &f &f &f &f &f &f &f &b &f &b &f &b &f &b &f &b &c &e &f &e &f &e &f &e &f &c &e &b &d &b &a &f &d &d &d &f&4 &f&6 &3&#fc6500[&]&f У Вас купили &#fc6500Незеритовый Меч &fза &e$10 &fна &e/ah'}
+];
+
 function buildPresets(){
   const g=document.getElementById('pgrid');
   PRESETS.forEach(p=>{
@@ -256,6 +270,39 @@ function buildPresets(){
     b.onclick=()=>setColors(p.c);
     g.appendChild(b);
   });
+}
+
+function buildTextPresets(){
+  const g=document.getElementById('tpgrid');
+  g.innerHTML = '';
+  TEXT_PRESETS.forEach(p=>{
+    const b=document.createElement('button');
+    b.className='preset';
+    b.style.alignItems='center';
+    b.style.justifyContent='center';
+    b.style.padding='10px';
+    b.style.textAlign='center';
+    b.innerHTML=`<span>${p.n}</span>`;
+    b.onclick=(e)=>copyToClipboard(p.t, e.currentTarget);
+    g.appendChild(b);
+  });
+}
+
+function copyToClipboard(str, btn) {
+  const el = document.createElement('textarea');
+  el.value = str;
+  document.body.appendChild(el);
+  el.select();
+  document.execCommand('copy');
+  document.body.removeChild(el);
+
+  const old = btn.innerHTML;
+  btn.innerHTML = '<span>✓ Скопировано!</span>';
+  btn.style.borderColor = 'var(--ok)';
+  setTimeout(() => {
+    btn.innerHTML = old;
+    btn.style.borderColor = '';
+  }, 1200);
 }
 
 function renderStops(){
@@ -312,7 +359,9 @@ function update(){
   const bt=bold?'&l':'';const tsz=9+(bold?2:0);
   const pv=document.getElementById('preview');
   pv.style.fontWeight=bold?'bold':'normal';
+  
   if(!txt){document.getElementById('output').value='';pv.innerHTML='';setCtr(0,false);return}
+
   const sp=(txt.match(/ /g)||[]).length;
   const vis=txt.length-sp;
   const lim=256-pfx.length-sp*5;
@@ -320,6 +369,7 @@ function update(){
   const step=vis/Math.max(1,maxC);
   const rgb=colors.map(h2r);
   let code='',html='',vi=0,lc=-999,ch='#fff';
+  
   for(let i=0;i<txt.length;i++){
     const c=txt[i];
     if(c===' '){code+='&f&l ';html+='<span style="margin:0 3px"> </span>';continue}
@@ -330,6 +380,7 @@ function update(){
     }
     code+=c;html+=`<span style="color:${ch}">${c}</span>`;vi++;
   }
+  
   const full=pfx+code;
   document.getElementById('output').value=full;
   pv.innerHTML=html;
@@ -354,7 +405,10 @@ function doCopy(e){
   setTimeout(()=>{b.textContent=t;b.style.background='';b.style.color=''},1300);
 }
 
-buildPresets();renderStops();update();
+buildPresets();
+buildTextPresets();
+renderStops();
+update();
 </script>
 </body>
 </html>
