@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MC Gradient Studio</title>
+<title>MC Gradient Studio — By Weeloser</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Unbounded:wght@700;900&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 @font-face {
@@ -12,63 +12,81 @@
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#07080f;--s1:#0d0f1c;--s2:#12152a;--s3:#181c33;
-  --b1:rgba(255,255,255,.055);--b2:rgba(255,255,255,.10);--b3:rgba(255,255,255,.18);
-  --txt:#dde3f0;--muted:#4a5270;--dim:#2a304d;
-  --acc:#7c6fff;--acc2:#b8b0ff;
-  --ok:#2dd4a0;--warn:#ff5252;
+  --bg:#060710;--s1:#0d0f1e;--s2:#11142a;--s3:#171a33;--s4:#1e2140;
+  --b1:rgba(255,255,255,.05);--b2:rgba(255,255,255,.09);--b3:rgba(255,255,255,.17);--b4:rgba(255,255,255,.25);
+  --txt:#dde3f0;--muted:#4a5270;--dim:#252a47;
+  --acc:#7c6fff;--acc2:#b8b0ff;--acc3:#5548d9;
+  --ok:#2dd4a0;--warn:#ff5252;--gold:#ffcc44;
+  --radius:18px;--radius-sm:10px;--radius-xs:7px;
 }
 html{scroll-behavior:smooth}
 body{font-family:'Manrope',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;overflow-x:hidden}
 
-/* noise */
+/* noise overlay */
 body::after{content:'';position:fixed;inset:0;
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-  opacity:.022;pointer-events:none;z-index:9999}
+  opacity:.02;pointer-events:none;z-index:9999}
 
 /* blobs */
-.blob{position:fixed;border-radius:50%;filter:blur(120px);pointer-events:none;z-index:0;animation:drift 20s ease-in-out infinite alternate}
-.ba{width:700px;height:700px;top:-200px;left:-150px;background:radial-gradient(circle,rgba(100,80,255,.13),transparent 70%);animation-duration:22s}
-.bb{width:500px;height:500px;bottom:-100px;right:-100px;background:radial-gradient(circle,rgba(180,100,255,.10),transparent 70%);animation-duration:17s;animation-delay:-9s}
-.bc{width:380px;height:380px;top:45%;left:42%;background:radial-gradient(circle,rgba(60,200,255,.07),transparent 70%);animation-duration:26s;animation-delay:-5s}
-@keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(40px,30px) scale(1.08)}}
+.blob{position:fixed;border-radius:50%;filter:blur(130px);pointer-events:none;z-index:0;animation:drift 22s ease-in-out infinite alternate}
+.ba{width:750px;height:750px;top:-250px;left:-180px;background:radial-gradient(circle,rgba(90,70,255,.11),transparent 70%);animation-duration:24s}
+.bb{width:550px;height:550px;bottom:-120px;right:-120px;background:radial-gradient(circle,rgba(170,90,255,.09),transparent 70%);animation-duration:18s;animation-delay:-10s}
+.bc{width:400px;height:400px;top:40%;left:40%;background:radial-gradient(circle,rgba(50,180,255,.06),transparent 70%);animation-duration:28s;animation-delay:-6s}
+@keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(50px,35px) scale(1.1)}}
 
 /* shell */
-.shell{position:relative;z-index:1;max-width:1260px;margin:0 auto;padding:0 24px 80px}
+.shell{position:relative;z-index:1;max-width:1320px;margin:0 auto;padding:0 24px 100px}
+
+/* WATERMARK */
+.watermark{
+  position:fixed;bottom:22px;right:26px;z-index:100;
+  font-family:'Unbounded',sans-serif;font-size:10px;font-weight:900;
+  letter-spacing:.18em;text-transform:uppercase;
+  background:linear-gradient(135deg,var(--acc2),var(--acc),#ff80d5);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  opacity:.55;pointer-events:none;animation:wm-glow 4s ease-in-out infinite alternate;
+}
+.watermark::before{
+  content:'✦';margin-right:6px;
+  background:linear-gradient(135deg,var(--acc2),var(--acc));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+@keyframes wm-glow{from{opacity:.4}to{opacity:.75}}
 
 /* header */
-header{display:flex;align-items:center;justify-content:space-between;padding:28px 0;border-bottom:1px solid var(--b1);margin-bottom:24px;flex-wrap:wrap;gap:14px}
-.mark{display:flex;flex-direction:column;gap:4px}
-.mark-title{font-family:'Unbounded',sans-serif;font-size:1.3rem;font-weight:900;letter-spacing:-.03em;line-height:1;background:linear-gradient(110deg,#fff 0%,#b8b0ff 55%,#7c6fff 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.mark-sub{font-size:9px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--muted)}
+header{display:flex;align-items:center;justify-content:space-between;padding:28px 0 20px;border-bottom:1px solid var(--b1);margin-bottom:24px;flex-wrap:wrap;gap:14px}
+.mark{display:flex;flex-direction:column;gap:5px}
+.mark-title{font-family:'Unbounded',sans-serif;font-size:1.35rem;font-weight:900;letter-spacing:-.03em;line-height:1;background:linear-gradient(110deg,#fff 0%,#b8b0ff 45%,#7c6fff 80%,#ff80d5 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.mark-sub{font-size:9px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:var(--muted)}
+.mark-author{font-size:8.5px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--dim);margin-top:2px}
 
-.ctr{font-family:'DM Mono',monospace;font-size:1.55rem;font-weight:500;padding:10px 22px;background:var(--s1);border:1px solid var(--b2);border-radius:14px;transition:all .25s;min-width:118px;text-align:center;line-height:1;box-shadow:0 8px 24px rgba(0,0,0,.15)}
+.ctr{font-family:'DM Mono',monospace;font-size:1.55rem;font-weight:500;padding:10px 22px;background:var(--s1);border:1px solid var(--b2);border-radius:14px;transition:all .25s;min-width:118px;text-align:center;line-height:1;box-shadow:0 8px 24px rgba(0,0,0,.18)}
 .ctr span{font-size:.52em;color:var(--muted)}
-.ctr.over{background:rgba(255,82,82,.12);border-color:var(--warn);color:var(--warn);animation:throb .9s infinite;box-shadow:0 0 24px rgba(255,82,82,.2)}
-.ctr.maxed{border-color:var(--acc);color:var(--acc2);box-shadow:0 0 20px rgba(124,111,255,.2)}
+.ctr.over{background:rgba(255,82,82,.1);border-color:var(--warn);color:var(--warn);animation:throb .9s infinite;box-shadow:0 0 24px rgba(255,82,82,.18)}
+.ctr.maxed{border-color:var(--acc);color:var(--acc2);box-shadow:0 0 20px rgba(124,111,255,.18)}
 @keyframes throb{0%,100%{opacity:1}50%{opacity:.45}}
 
 /* layout */
-.layout{display:grid;grid-template-columns:318px 1fr;gap:20px;align-items:start}
-@media(max-width:860px){.layout{grid-template-columns:1fr}}
+.layout{display:grid;grid-template-columns:330px 1fr;gap:20px;align-items:start}
+@media(max-width:880px){.layout{grid-template-columns:1fr}}
 .left,.right{display:flex;flex-direction:column;gap:16px}
 
 /* card */
-.card{background:var(--s1);border:1px solid var(--b1);border-radius:20px;padding:20px;transition:all .3s ease;animation:up .4s ease both;box-shadow:0 8px 24px rgba(0,0,0,.2)}
-.card:hover{border-color:var(--b3);box-shadow:0 12px 32px rgba(0,0,0,.35)}
-@keyframes up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-.left .card:nth-child(1){animation-delay:.05s}.left .card:nth-child(2){animation-delay:.10s}.left .card:nth-child(3){animation-delay:.16s}
-.right .card:nth-child(1){animation-delay:.08s}.right .card:nth-child(2){animation-delay:.14s}.right .card:nth-child(3){animation-delay:.20s}
+.card{background:var(--s1);border:1px solid var(--b1);border-radius:var(--radius);padding:20px;transition:border-color .3s,box-shadow .3s;animation:up .4s ease both;box-shadow:0 8px 28px rgba(0,0,0,.22)}
+.card:hover{border-color:var(--b2);box-shadow:0 14px 36px rgba(0,0,0,.32)}
+@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.left .card:nth-child(1){animation-delay:.05s}.left .card:nth-child(2){animation-delay:.10s}.left .card:nth-child(3){animation-delay:.16s}.left .card:nth-child(4){animation-delay:.22s}
+.right .card:nth-child(1){animation-delay:.08s}.right .card:nth-child(2){animation-delay:.14s}.right .card:nth-child(3){animation-delay:.20s}.right .card:nth-child(4){animation-delay:.26s}
 
-.ctitle{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.22em;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
-.ctitle .badge{font-family:'DM Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0;color:var(--dim)}
+.ctitle{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.22em;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ctitle .badge{font-family:'DM Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0;color:var(--dim);text-transform:none}
 
 /* stops */
-.stops{max-height:255px;overflow-y:auto;padding-right:4px;margin-bottom:12px}
+.stops{max-height:240px;overflow-y:auto;padding-right:4px;margin-bottom:12px}
 .srow{display:flex;align-items:center;gap:10px;background:var(--s2);border:1px solid var(--b1);border-radius:12px;padding:8px 10px;margin-bottom:6px;transition:all .2s;cursor:grab}
 .srow:hover{border-color:var(--b3);background:var(--s3)}
-.srow.drag{opacity:.35;cursor:grabbing;transform:scale(0.98)}
-.sw{width:32px;height:32px;border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,.10);flex-shrink:0;position:relative;cursor:pointer;box-shadow:inset 0 2px 4px rgba(0,0,0,.3)}
+.srow.drag{opacity:.3;cursor:grabbing;transform:scale(0.97)}
+.sw{width:32px;height:32px;border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,.1);flex-shrink:0;position:relative;cursor:pointer;box-shadow:inset 0 2px 4px rgba(0,0,0,.3)}
 .sw input[type=color]{position:absolute;inset:-30%;width:160%;height:160%;border:none;background:transparent;appearance:none;cursor:pointer}
 .sw input[type=color]::-webkit-color-swatch{border:none;border-radius:0}
 .hx{flex:1;background:transparent;border:none;outline:none;font-family:'DM Mono',monospace;font-size:12px;color:var(--txt);min-width:0;letter-spacing:.06em}
@@ -79,120 +97,208 @@ header{display:flex;align-items:center;justify-content:space-between;padding:28p
 .gbar{height:6px;border-radius:6px;margin-bottom:14px;transition:background .3s;box-shadow:inset 0 1px 3px rgba(0,0,0,.5)}
 
 /* btn */
-.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;background:var(--acc);color:#fff;border:none;border-radius:12px;font-family:'Manrope',sans-serif;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;cursor:pointer;transition:all .2s;box-shadow:0 4px 12px rgba(124,111,255,.3)}
-.btn:hover{background:var(--acc2);color:#1a1040;transform:translateY(-2px);box-shadow:0 6px 16px rgba(184,176,255,.4)}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;background:var(--acc);color:#fff;border:none;border-radius:12px;font-family:'Manrope',sans-serif;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;cursor:pointer;transition:all .2s;box-shadow:0 4px 14px rgba(124,111,255,.28)}
+.btn:hover{background:var(--acc2);color:#1a1040;transform:translateY(-2px);box-shadow:0 6px 18px rgba(184,176,255,.38)}
 .btn:active{transform:scale(.97)}
+.btn-sm{padding:9px 14px;font-size:10px;border-radius:9px;width:auto}
+.btn-ghost{background:var(--s2);color:var(--muted);border:1px solid var(--b2);box-shadow:none}
+.btn-ghost:hover{background:var(--s3);color:var(--txt);transform:none;box-shadow:none}
+.btn-danger{background:rgba(255,82,82,.12);color:var(--warn);border:1px solid rgba(255,82,82,.2);box-shadow:none}
+.btn-danger:hover{background:rgba(255,82,82,.2);color:#fff;transform:translateY(-2px)}
 
 /* presets */
-.pwrap{max-height:360px;overflow-y:auto;padding-right:4px}
+.pwrap{max-height:320px;overflow-y:auto;padding-right:4px}
 .pgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.preset{background:var(--s2);border:1px solid var(--b1);border-radius:12px;padding:10px 12px;font-family:'Manrope',sans-serif;font-size:10.5px;font-weight:700;color:var(--txt);cursor:pointer;display:flex;flex-direction:column;gap:8px;text-align:left;transition:all .2s;position:relative;overflow:hidden}
-.preset::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.04),transparent);pointer-events:none}
-.preset:hover{border-color:var(--b3);background:var(--s3);transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.preset{background:var(--s2);border:1px solid var(--b1);border-radius:12px;padding:10px 12px;font-family:'Manrope',sans-serif;font-size:10.5px;font-weight:700;color:var(--txt);cursor:pointer;display:flex;flex-direction:column;gap:7px;text-align:left;transition:all .2s;position:relative;overflow:hidden}
+.preset::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.03),transparent);pointer-events:none}
+.preset:hover{border-color:var(--b3);background:var(--s3);transform:translateY(-2px);box-shadow:0 4px 14px rgba(0,0,0,.22)}
 .preset:active{transform:scale(.97)}
-.pbar{display:flex;height:4px;border-radius:4px;overflow:hidden;gap:1px;box-shadow:inset 0 1px 2px rgba(0,0,0,.3)}
+.pbar{display:flex;height:4px;border-radius:4px;overflow:hidden;gap:1px}
 .pbar span{flex:1}
+
+/* preset delete btn */
+.preset-del{position:absolute;top:6px;right:6px;opacity:0;background:rgba(255,82,82,.15);border:none;color:var(--warn);font-size:10px;border-radius:5px;padding:2px 5px;cursor:pointer;transition:all .2s;line-height:1;z-index:2}
+.preset:hover .preset-del{opacity:1}
+.preset-del:hover{background:rgba(255,82,82,.3)}
+
+/* tab-like pill bar for text presets */
+.mode-switch{display:flex;background:var(--s2);border:1px solid var(--b1);border-radius:12px;padding:3px;margin-bottom:12px;gap:2px;overflow-x:auto}
+.mbtn{flex:1;padding:9px 10px;border:none;background:transparent;color:var(--muted);font-family:'Manrope',sans-serif;font-size:10.5px;font-weight:700;border-radius:9px;cursor:pointer;transition:all .2s;white-space:nowrap}
+.mbtn.active{background:var(--s3);color:var(--txt);box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.mbtn:hover:not(.active){color:var(--txt)}
+
+.clan-warn{font-size:10px;color:var(--warn);background:rgba(255,82,82,.08);border:1px solid rgba(255,82,82,.2);padding:10px 14px;border-radius:10px;margin-bottom:12px;text-align:center;line-height:1.5;font-weight:600}
 
 /* settings */
 .flabel{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.18em;color:var(--muted);margin-bottom:8px;display:block}
-.field{width:100%;background:var(--s2);border:1px solid var(--b1);border-radius:10px;padding:12px 14px;font-family:'DM Mono',monospace;font-size:12px;color:var(--txt);outline:none;transition:all .2s;box-shadow:inset 0 2px 4px rgba(0,0,0,.2)}
-.field:focus{border-color:var(--acc);box-shadow:inset 0 2px 4px rgba(0,0,0,.2), 0 0 0 3px rgba(124,111,255,.15)}
-.togrow{display:flex;align-items:center;justify-content:space-between;padding:4px 0}
-.toglabel{font-size:12px;font-weight:600;color:var(--muted)}
-.toglabel code{font-family:'DM Mono',monospace;font-size:10px;color:var(--dim);background:var(--s3);padding:2px 6px;border-radius:6px}
-.tog{position:relative;width:44px;height:24px;cursor:pointer;flex-shrink:0}
+.field{width:100%;background:var(--s2);border:1px solid var(--b1);border-radius:var(--radius-sm);padding:11px 14px;font-family:'DM Mono',monospace;font-size:12px;color:var(--txt);outline:none;transition:all .2s;box-shadow:inset 0 2px 4px rgba(0,0,0,.2)}
+.field:focus{border-color:var(--acc);box-shadow:inset 0 2px 4px rgba(0,0,0,.2), 0 0 0 3px rgba(124,111,255,.12)}
+
+/* toggles */
+.togrow{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--b1)}
+.togrow:last-child{border-bottom:none}
+.toglabel{font-size:12px;font-weight:600;color:var(--txt);display:flex;align-items:center;gap:8px}
+.toglabel code{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);background:var(--s3);padding:2px 6px;border-radius:5px}
+.toglabel small{font-size:10px;color:var(--muted);font-weight:400}
+.tog{position:relative;width:40px;height:22px;cursor:pointer;flex-shrink:0}
 .tog input{display:none}
-.ttrack{position:absolute;inset:0;background:var(--s3);border:1px solid var(--b2);border-radius:12px;transition:.2s}
+.ttrack{position:absolute;inset:0;background:var(--s3);border:1px solid var(--b2);border-radius:11px;transition:.2s}
 .tog input:checked~.ttrack{background:var(--acc);border-color:var(--acc)}
-.tthumb{position:absolute;top:2px;left:2px;width:18px;height:18px;background:#fff;border-radius:50%;transition:.3s cubic-bezier(.4,0,.2,1);box-shadow:0 2px 6px rgba(0,0,0,.4)}
-.tog input:checked~.tthumb{left:22px}
+.tthumb{position:absolute;top:2px;left:2px;width:16px;height:16px;background:#fff;border-radius:50%;transition:.3s cubic-bezier(.4,0,.2,1);box-shadow:0 2px 6px rgba(0,0,0,.4)}
+.tog input:checked~.tthumb{left:20px}
+
+/* checkbox style */
+.chkrow{display:flex;align-items:center;gap:10px;padding:6px 0;cursor:pointer;border-bottom:1px solid var(--b1)}
+.chkrow:last-child{border-bottom:none}
+.chkbox{width:18px;height:18px;border-radius:5px;border:1.5px solid var(--b3);background:var(--s2);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.chkbox.checked{background:var(--acc);border-color:var(--acc)}
+.chkbox svg{opacity:0;transition:opacity .2s}
+.chkbox.checked svg{opacity:1}
+.chk-label{font-size:12px;font-weight:600;color:var(--txt)}
+.chk-label code{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);background:var(--s3);padding:2px 6px;border-radius:5px}
 
 /* text input */
-.tcard{padding:32px 28px}
-.mtext{width:100%;background:transparent;border:none;outline:none;resize:none;font-family:'Unbounded',sans-serif;font-size:1.6rem;font-weight:700;color:var(--txt);text-align:center;line-height:1.3;transition:font-size .2s}
-.mtext::placeholder{color:rgba(255,255,255,.12)}
+.tcard{padding:28px 24px}
+.mtext{width:100%;background:transparent;border:none;outline:none;resize:none;font-family:'Unbounded',sans-serif;font-size:1.5rem;font-weight:700;color:var(--txt);text-align:center;line-height:1.35;transition:font-size .2s}
+.mtext::placeholder{color:rgba(255,255,255,.1)}
 
 /* preview */
-.pcard{padding:24px}
-.mcscreen{background:#090909;border:1px solid #1c1c1c;border-bottom:3px solid #000;border-right:3px solid #000;border-radius:16px;min-height:160px;display:flex;align-items:center;justify-content:center;padding:24px;position:relative;overflow:hidden;margin-bottom:20px}
-.mcscreen::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(255,255,255,.007) 2px,rgba(255,255,255,.007) 4px);pointer-events:none}
-.mcscreen::after{content:'';position:absolute;inset:0;box-shadow:inset 0 0 80px rgba(0,0,0,.92);pointer-events:none;border-radius:16px}
-#preview{font-family:'MC','Courier New',monospace;text-shadow:2px 2px 0 rgba(0,0,0,.95),3px 3px 0 rgba(0,0,0,.6);white-space:pre-wrap;word-break:break-all;line-height:1.5;text-align:center;width:100%;transition:font-size .2s;position:relative;z-index:1}
+.mcscreen{background:#080808;border:1px solid #1a1a1a;border-bottom:3px solid #000;border-right:3px solid #000;border-radius:14px;min-height:150px;display:flex;align-items:center;justify-content:center;padding:22px;position:relative;overflow:hidden;margin-bottom:18px}
+.mcscreen::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(255,255,255,.005) 2px,rgba(255,255,255,.005) 4px);pointer-events:none}
+.mcscreen::after{content:'';position:absolute;inset:0;box-shadow:inset 0 0 80px rgba(0,0,0,.9);pointer-events:none;border-radius:14px}
+#preview{font-family:'MC','Courier New',monospace;text-shadow:2px 2px 0 rgba(0,0,0,.95),3px 3px 0 rgba(0,0,0,.6);white-space:pre-wrap;word-break:break-all;line-height:1.55;text-align:center;width:100%;transition:font-size .2s;position:relative;z-index:1}
+
+/* readability index */
+.readability{display:flex;align-items:center;gap:10px;margin-bottom:14px;background:var(--s2);border:1px solid var(--b1);border-radius:10px;padding:10px 14px}
+.rlab{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.18em;color:var(--muted);flex-shrink:0}
+.rbar-wrap{flex:1;height:6px;background:var(--s3);border-radius:6px;overflow:hidden}
+.rbar{height:100%;border-radius:6px;transition:width .4s cubic-bezier(.4,0,.2,1),background .4s}
+.rscore{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;flex-shrink:0;min-width:32px;text-align:right}
 
 .outrow{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .outlabel{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.2em;color:var(--muted)}
 .pill{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;padding:4px 12px;border-radius:20px;background:rgba(45,212,160,.1);color:var(--ok);border:1px solid rgba(45,212,160,.2);transition:all .3s}
-.pill.warn{background:rgba(255,82,82,.1);color:var(--warn);border-color:rgba(255,82,82,.3);box-shadow:0 0 10px rgba(255,82,82,.15)}
+.pill.warn{background:rgba(255,82,82,.1);color:var(--warn);border-color:rgba(255,82,82,.3);box-shadow:0 0 10px rgba(255,82,82,.12)}
 
-#output{width:100%;height:100px;background:var(--s2);border:1px solid var(--b2);border-radius:14px;padding:14px 16px;font-family:'DM Mono',monospace;font-size:11px;color:var(--acc2);resize:none;outline:none;transition:all .2s;box-shadow:inset 0 2px 6px rgba(0,0,0,.2)}
+#output{width:100%;height:96px;background:var(--s2);border:1px solid var(--b2);border-radius:13px;padding:14px 16px;font-family:'DM Mono',monospace;font-size:11px;color:var(--acc2);resize:none;outline:none;transition:all .2s;box-shadow:inset 0 2px 6px rgba(0,0,0,.2)}
 #output:focus{border-color:var(--acc)}
-#output.error{border-color:var(--warn);color:var(--warn);background:rgba(255,82,82,.05);box-shadow:inset 0 0 0 1px rgba(255,82,82,.2)}
+#output.error{border-color:var(--warn);color:var(--warn);background:rgba(255,82,82,.05)}
 
-.copybtn{background:var(--acc);color:#fff;border:none;border-radius:12px;padding:12px 24px;font-family:'Manrope',sans-serif;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;cursor:pointer;transition:all .2s;box-shadow:0 4px 12px rgba(124,111,255,.3)}
-.copybtn:hover:not(.disabled){background:var(--acc2);color:#1a1040;transform:translateY(-2px);box-shadow:0 6px 16px rgba(184,176,255,.4)}
+.copybtn{background:var(--acc);color:#fff;border:none;border-radius:11px;padding:12px 24px;font-family:'Manrope',sans-serif;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;cursor:pointer;transition:all .2s;box-shadow:0 4px 12px rgba(124,111,255,.28)}
+.copybtn:hover:not(.disabled){background:var(--acc2);color:#1a1040;transform:translateY(-2px);box-shadow:0 6px 16px rgba(184,176,255,.38)}
 .copybtn:active:not(.disabled){transform:scale(.96)}
-.copybtn.disabled{background:var(--s2);color:var(--warn);border:1px solid var(--warn);cursor:not-allowed;box-shadow:none;opacity:0.8}
+.copybtn.disabled{background:var(--s2);color:var(--warn);border:1px solid var(--warn);cursor:not-allowed;box-shadow:none;opacity:.8}
 
-/* Mode Switch UI */
-.mode-switch {
-  display: flex;
-  background: var(--s2);
-  border: 1px solid var(--b1);
-  border-radius: 12px;
-  padding: 4px;
-  margin-bottom: 12px;
-}
-.mbtn {
-  flex: 1;
-  padding: 10px 12px;
-  border: none;
-  background: transparent;
-  color: var(--muted);
-  font-family: 'Manrope', sans-serif;
-  font-size: 11px;
-  font-weight: 700;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.mbtn.active {
-  background: var(--s3);
-  color: var(--txt);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-}
-.mbtn:hover:not(.active) {
-  color: var(--txt);
-}
-.clan-warn {
-  font-size: 10px;
-  color: var(--warn);
-  background: rgba(255,82,82,0.1);
-  border: 1px solid rgba(255,82,82,0.2);
-  padding: 10px 14px;
-  border-radius: 10px;
-  margin-bottom: 12px;
-  text-align: center;
-  line-height: 1.5;
-  font-weight: 600;
-}
+/* pipette modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);animation:fadein .2s ease}
+.modal-overlay.hidden{display:none}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.modal{background:var(--s1);border:1px solid var(--b2);border-radius:20px;padding:24px;width:420px;max-width:95vw;box-shadow:0 24px 60px rgba(0,0,0,.5);animation:scaleup .2s ease}
+@keyframes scaleup{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-title{font-family:'Unbounded',sans-serif;font-size:13px;font-weight:900;margin-bottom:18px;color:var(--acc2)}
 
-::-webkit-scrollbar{width:6px}
+.drop-zone{border:2px dashed var(--b3);border-radius:14px;padding:28px 20px;text-align:center;cursor:pointer;transition:all .2s;background:var(--s2);margin-bottom:12px}
+.drop-zone:hover,.drop-zone.drag-over{border-color:var(--acc);background:rgba(124,111,255,.07)}
+.drop-zone p{font-size:12px;color:var(--muted);line-height:1.6}
+.drop-zone strong{color:var(--txt)}
+
+#pipetteCanvas{width:100%;border-radius:10px;cursor:crosshair;display:none;margin-bottom:12px;max-height:240px;object-fit:contain}
+.picked-color{display:flex;align-items:center;gap:12px;background:var(--s2);border:1px solid var(--b1);border-radius:10px;padding:12px 14px;margin-bottom:14px}
+.picked-swatch{width:36px;height:36px;border-radius:8px;border:1px solid var(--b2);flex-shrink:0}
+.picked-hex{font-family:'DM Mono',monospace;font-size:14px;font-weight:500;color:var(--txt)}
+.picked-hex small{font-size:10px;color:var(--muted);display:block}
+
+/* Saved templates modal */
+.save-modal{width:520px}
+.template-list{max-height:280px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.tpl-row{display:flex;align-items:center;gap:10px;background:var(--s2);border:1px solid var(--b1);border-radius:10px;padding:10px 12px;cursor:pointer;transition:all .2s}
+.tpl-row:hover{border-color:var(--b3);background:var(--s3)}
+.tpl-name{flex:1;font-size:12px;font-weight:700}
+.tpl-type{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border-radius:20px}
+.tpl-type.color{background:rgba(124,111,255,.15);color:var(--acc2)}
+.tpl-type.text{background:rgba(45,212,160,.12);color:var(--ok)}
+.tpl-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;padding:4px 6px;border-radius:6px;transition:all .2s}
+.tpl-del:hover{color:var(--warn);background:rgba(255,82,82,.1)}
+.tpl-apply{background:var(--acc);color:#fff;border:none;font-size:10px;font-weight:700;padding:5px 12px;border-radius:7px;cursor:pointer;transition:all .2s}
+.tpl-apply:hover{background:var(--acc2);color:#1a1040}
+
+/* plain color palette */
+.mc-palette{display:grid;grid-template-columns:repeat(8,1fr);gap:5px;margin-bottom:12px}
+.mc-swatch{width:100%;aspect-ratio:1;border-radius:6px;border:1.5px solid transparent;cursor:pointer;transition:all .15s;position:relative}
+.mc-swatch:hover{transform:scale(1.15);border-color:rgba(255,255,255,.4);z-index:2}
+.mc-swatch.selected{border-color:#fff;box-shadow:0 0 8px rgba(255,255,255,.4);transform:scale(1.1)}
+.mc-swatch-label{font-size:8px;text-align:center;margin-top:3px;color:var(--muted);font-family:'DM Mono',monospace}
+
+/* section divider */
+.sdivider{height:1px;background:var(--b1);margin:14px 0}
+
+/* format chips */
+.format-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.fchip{padding:5px 12px;border-radius:20px;border:1px solid var(--b2);background:var(--s2);font-size:10px;font-weight:700;color:var(--muted);cursor:pointer;transition:all .2s;font-family:'DM Mono',monospace}
+.fchip:hover{border-color:var(--b3);color:var(--txt)}
+.fchip.active{background:rgba(124,111,255,.15);border-color:var(--acc);color:var(--acc2)}
+
+::-webkit-scrollbar{width:5px}
 ::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--b2);border-radius:6px}
+::-webkit-scrollbar-thumb{background:var(--b2);border-radius:5px}
 ::-webkit-scrollbar-thumb:hover{background:var(--b3)}
+
+/* separator text */
+.sep-label{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.2em;color:var(--dim);display:flex;align-items:center;gap:10px;margin:10px 0}
+.sep-label::before,.sep-label::after{content:'';flex:1;height:1px;background:var(--b1)}
 </style>
 </head>
 <body>
 
+<div class="watermark">By Weeloser</div>
 <div class="blob ba"></div>
 <div class="blob bb"></div>
 <div class="blob bc"></div>
+
+<!-- Pipette Modal -->
+<div class="modal-overlay hidden" id="pipetteModal">
+  <div class="modal">
+    <div class="modal-title">🎨 Пипетка — выбор цвета</div>
+    <div class="drop-zone" id="dropZone">
+      <p><strong>Вставьте скриншот</strong> (Ctrl+V)<br>или перетащите / выберите файл</p>
+      <input type="file" id="fileInput" accept="image/*" style="display:none">
+    </div>
+    <canvas id="pipetteCanvas"></canvas>
+    <div class="picked-color">
+      <div class="picked-swatch" id="pickedSwatch" style="background:#7c6fff"></div>
+      <div>
+        <div class="picked-hex" id="pickedHex">#7C6FFF</div>
+        <small class="picked-hex" style="margin-top:2px"><span id="pickedRgb">rgb(124,111,255)</span></small>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-sm" onclick="addPickedColor()" style="flex:1">Добавить в градиент</button>
+      <button class="btn btn-sm btn-ghost" onclick="closePipette()">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<!-- Saved Templates Modal -->
+<div class="modal-overlay hidden" id="tplModal">
+  <div class="modal save-modal">
+    <div class="modal-title">💾 Мои шаблоны</div>
+    <div class="template-list" id="tplList"></div>
+    <div class="sep-label">Сохранить текущий</div>
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      <input type="text" id="tplName" class="field" placeholder="Название шаблона..." style="flex:1">
+      <button class="btn btn-sm" style="width:auto" onclick="saveCurrentAsTemplate('color')">💜 Цвет</button>
+      <button class="btn btn-sm" onclick="saveCurrentAsTemplate('text')" style="background:var(--ok);box-shadow:none;width:auto">✦ Текст</button>
+    </div>
+    <button class="btn btn-ghost" onclick="closeTplModal()">Закрыть</button>
+  </div>
+</div>
 
 <div class="shell">
   <header>
     <div class="mark">
       <div class="mark-title">Gradient Studio</div>
       <div class="mark-sub">Minecraft Chat Optimizer</div>
+      <div class="mark-author">By Weeloser</div>
     </div>
     <div id="ctr" class="ctr">0<span>/256</span></div>
   </header>
@@ -200,73 +306,119 @@ header{display:flex;align-items:center;justify-content:space-between;padding:28p
   <div class="layout">
     <div class="left">
 
+      <!-- Color stops -->
       <div class="card">
         <div class="ctitle">Точки цвета <span id="dc" class="badge">0 / 12</span></div>
         <div id="stops" class="stops"></div>
         <div id="gbar" class="gbar"></div>
-        <button class="btn" onclick="addStop()">
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          Добавить цвет
-        </button>
+        <div style="display:flex;gap:8px">
+          <button class="btn" onclick="addStop()">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            Добавить цвет
+          </button>
+          <button class="btn btn-sm btn-ghost" title="Пипетка" onclick="openPipette()">🎨</button>
+        </div>
       </div>
 
+      <!-- Color Presets -->
       <div class="card">
-        <div class="ctitle">Пресеты</div>
+        <div class="ctitle">Пресеты цвета <span class="badge" style="cursor:pointer;color:var(--acc2)" onclick="openTplModal()">+ Мои шаблоны</span></div>
         <div class="pwrap"><div class="pgrid" id="pgrid"></div></div>
       </div>
 
+      <!-- Settings -->
       <div class="card">
         <div class="ctitle">Настройки</div>
-        
-        <div style="margin-bottom:16px; display:flex; gap:12px;">
+        <div style="margin-bottom:16px;display:flex;gap:12px">
           <div style="flex:1">
             <label class="flabel">Команда / Префикс</label>
             <input type="text" id="prefix" value="/bc " class="field" oninput="update()">
           </div>
-          <div style="width:100px;">
+          <div style="width:96px">
             <label class="flabel">Лимит симв.</label>
-            <input type="number" id="limit" value="256" class="field" min="10" max="9999" oninput="update()" style="text-align:center; font-weight:700;">
+            <input type="number" id="limit" value="256" class="field" min="10" max="9999" oninput="update()" style="text-align:center;font-weight:700">
           </div>
         </div>
-        
-        <div class="togrow">
-          <span class="toglabel">Жирный <code>&amp;l</code></span>
-          <label class="tog">
-            <input type="checkbox" id="bold" checked onchange="update()">
-            <div class="ttrack"></div>
-            <div class="tthumb"></div>
-          </label>
+
+        <div class="sep-label">Форматирование</div>
+        <div id="formatSection">
+          <div class="togrow">
+            <span class="toglabel">Жирный <code>&amp;l</code></span>
+            <label class="tog"><input type="checkbox" id="bold" checked onchange="update()"><div class="ttrack"></div><div class="tthumb"></div></label>
+          </div>
+          <div class="togrow">
+            <span class="toglabel">Курсив <code>&amp;o</code></span>
+            <label class="tog"><input type="checkbox" id="italic" onchange="update()"><div class="ttrack"></div><div class="tthumb"></div></label>
+          </div>
+          <div class="togrow">
+            <span class="toglabel">Подчёркнутый <code>&amp;n</code></span>
+            <label class="tog"><input type="checkbox" id="underline" onchange="update()"><div class="ttrack"></div><div class="tthumb"></div></label>
+          </div>
+          <div class="togrow">
+            <span class="toglabel">Зачеркнутый <code>&amp;m</code></span>
+            <label class="tog"><input type="checkbox" id="strikethrough" onchange="update()"><div class="ttrack"></div><div class="tthumb"></div></label>
+          </div>
         </div>
+
+        <div class="sdivider"></div>
+        <div style="display:flex;gap:8px;margin-top:2px">
+          <button class="btn btn-sm btn-ghost" style="flex:1" onclick="togglePlainMode()">
+            <span id="plainModeLabel">🎨 Обычный цвет</span>
+          </button>
+          <button class="btn btn-sm btn-ghost" style="flex:1" onclick="toggleNoFormat()">
+            <span id="noFmtLabel">✕ Без форматирования</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Plain MC Colors (shown when plainMode active) -->
+      <div class="card" id="plainCard" style="display:none">
+        <div class="ctitle">Стандартные цвета Minecraft</div>
+        <div class="mc-palette" id="mcPalette"></div>
+        <div style="font-size:10px;color:var(--muted);text-align:center">Кликните для выбора цвета текста</div>
       </div>
 
     </div>
 
     <div class="right">
 
+      <!-- Text templates -->
       <div class="card">
-        <div class="ctitle">Копирование (Клик = Буфер обмена)</div>
-        <div class="mode-switch">
+        <div class="ctitle">Шаблоны <span class="badge" style="cursor:pointer;color:var(--acc2)" onclick="openTplModal()">💾 Мои</span></div>
+        <div class="mode-switch" id="modeSwitch">
           <button id="mode0" class="mbtn active" onclick="setMode(0)">Без клана</button>
-          <button id="mode1" class="mbtn" onclick="setMode(1)">Я состою в клане</button>
+          <button id="mode1" class="mbtn" onclick="setMode(1)">В клане</button>
+          <button id="modeUser" class="mbtn" onclick="setMode(2)">⭐ Мои</button>
         </div>
-        <div id="clanWarn" class="clan-warn" style="display:none;">Сократите название клана до 3 символов, что бы текст конкретно отображался через /clan rename [name]</div>
+        <div id="clanWarn" class="clan-warn" style="display:none">Сократите название клана до 3 символов</div>
         <div class="pgrid" id="tpgrid"></div>
+        <div id="emptyUser" style="display:none;text-align:center;padding:20px;font-size:12px;color:var(--muted)">Нет сохранённых текстовых шаблонов.<br>Сохраните через <strong>💾 Мои шаблоны</strong></div>
       </div>
 
+      <!-- Text input -->
       <div class="card tcard">
         <div class="ctitle" style="margin-bottom:16px">Ваше сообщение</div>
         <textarea id="mainText" class="mtext" rows="2" oninput="update()" placeholder="Напишите текст...">Текст</textarea>
       </div>
 
-      <div class="card pcard">
+      <!-- Preview -->
+      <div class="card" style="padding:24px">
         <div class="ctitle" style="margin-bottom:16px">Превью в игровом чате</div>
         <div class="mcscreen"><div id="preview"></div></div>
+
+        <div class="readability">
+          <span class="rlab">Читаемость</span>
+          <div class="rbar-wrap"><div class="rbar" id="rbar" style="width:0%;background:var(--warn)"></div></div>
+          <span class="rscore" id="rscore" style="color:var(--warn)">—</span>
+        </div>
+
         <div class="outrow">
           <span class="outlabel">Код для вставки</span>
           <span id="pill" class="pill">Готово</span>
         </div>
         <textarea id="output" readonly></textarea>
-        <div style="display:flex;justify-content:flex-end;margin-top:14px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px;gap:10px">
+          <button class="btn btn-sm btn-ghost" onclick="openTplModal()" style="width:auto">💾 Сохранить как шаблон</button>
           <button id="copyBtn" class="copybtn" onclick="doCopy(event)">Копировать код</button>
         </div>
       </div>
@@ -276,34 +428,60 @@ header{display:flex;align-items:center;justify-content:space-between;padding:28p
 </div>
 
 <script>
-let colors=['#bc00ff','#ff00ff','#ff8800'];
-let currentTextMode = 0; // 0 = Без клана, 1 = Я состою в клане
+/* ==================== STATE ==================== */
+let colors = ['#bc00ff','#ff00ff','#ff8800'];
+let currentTextMode = 0;
+let plainMode = false;
+let noFormat = false;
+let selectedMcColor = null;
+let pickedColor = '#7c6fff';
 
-const PRESETS=[
+/* ==================== MC COLORS ==================== */
+const MC_COLORS = [
+  {code:'0',hex:'#000000',name:'Чёрный'},
+  {code:'1',hex:'#0000aa',name:'Тёмно-синий'},
+  {code:'2',hex:'#00aa00',name:'Тёмно-зелёный'},
+  {code:'3',hex:'#00aaaa',name:'Тёмно-голубой'},
+  {code:'4',hex:'#aa0000',name:'Тёмно-красный'},
+  {code:'5',hex:'#aa00aa',name:'Тёмно-фиол.'},
+  {code:'6',hex:'#ffaa00',name:'Золотой'},
+  {code:'7',hex:'#aaaaaa',name:'Светло-серый'},
+  {code:'8',hex:'#555555',name:'Тёмно-серый'},
+  {code:'9',hex:'#5555ff',name:'Синий'},
+  {code:'a',hex:'#55ff55',name:'Зелёный'},
+  {code:'b',hex:'#55ffff',name:'Голубой'},
+  {code:'c',hex:'#ff5555',name:'Красный'},
+  {code:'d',hex:'#ff55ff',name:'Розовый'},
+  {code:'e',hex:'#ffff55',name:'Жёлтый'},
+  {code:'f',hex:'#ffffff',name:'Белый'},
+];
+
+/* ==================== PRESETS ==================== */
+const PRESETS = [
   {n:'🌈 Радуга',    c:['#ff0000','#ff8c00','#ffff00','#00e676','#00b0ff','#7c4dff','#ff00ff']},
-  {n:'🌊 Неон',      c:['#00ff00','#00ffff','#ff00ff']},
+  {n:'🌊 Неон',      c:['#00ff41','#00ffff','#ff00ff']},
   {n:'📼 Ретровейв', c:['#f3e600','#ff00a0','#4a00e0']},
-  {n:'🌲 Лес',       c:['#1a3300','#336600','#66bb00','#99dd00','#ccff44']},
   {n:'🔮 Магия',     c:['#4a00e0','#8e2de2','#f000ff','#ff007f']},
   {n:'🌸 Пастель',   c:['#ffb3ba','#ffdfba','#ffffba','#baffc9','#bae1ff']},
-  {n:'🩸 Кровавый',  c:['#3a0000','#8b0000','#ff0000','#4a0000']},
+  {n:'🩸 Кровавый',  c:['#4a0000','#8b0000','#ff0000','#ff4444']},
   {n:'🧪 Токсик',    c:['#bfff00','#00ff00','#006600']},
-  {n:'🌌 Космос',    c:['#000000','#0f0f3d','#290066','#6600cc']},
   {n:'🍬 Вата',      c:['#ffbcd9','#fbe5ff','#d1e8ff']},
-  {n:'🔥 Огонь',     c:['#1a0000','#ff2200','#ff7700','#ffcc00','#ffffff']},
+  {n:'🔥 Огонь',     c:['#ff2200','#ff7700','#ffcc00','#fffacd']},
   {n:'💎 Алмаз',     c:['#fff','#a8edff','#00d4ff','#007acc','#00d4ff','#a8edff','#fff']},
-  {n:'⚡ Гроза',     c:['#0a0a1a','#1a1aff','#8888ff','#fff9aa','#ffee00']},
-  {n:'🌊 Океан',     c:['#001233','#023e8a','#0077b6','#00b4d8','#90e0ef','#caf0f8']},
-  {n:'🌅 Закат',     c:['#0d0630','#4776e6','#9b54e9','#f83600','#f9c423']},
+  {n:'⚡ Гроза',     c:['#1a1aff','#8888ff','#fff9aa','#ffee00']},
+  {n:'🌊 Океан',     c:['#023e8a','#0077b6','#00b4d8','#90e0ef','#caf0f8']},
+  {n:'🌅 Закат',     c:['#4776e6','#9b54e9','#f83600','#f9c423']},
   {n:'🌃 Киберпанк', c:['#ff00cc','#7700ff','#00ffe1','#ff00cc']},
-  {n:'🚨 Тревога',   c:['#000','#3d0000','#cc0000','#ff4444','#cc0000','#3d0000','#000']},
-  {n:'💚 Matrix',    c:['#000','#003300','#00ff00','#88ff88','#00ff00','#003300']},
-  {n:'☕ Espresso',  c:['#1a0800','#4a2c00','#8b5e3c','#c4a882','#e8d5b7']},
-  {n:'🎃 Хэллоуин', c:['#0d0011','#4a0080','#aa3300','#ff6b00','#ffcc00']},
-  {n:'🌙 Ночь',      c:['#000010','#10003d','#3300aa','#6600ff','#aa66ff','#ddbcff']},
-  {n:'🎨 Художник',  c:['#fc5c7d','#6a82fb','#43e97b','#fa8231','#fc5c7d']},
-  {n:'🟡 Золото',    c:['#3d2a00','#996600','#ffcc00','#ffe066','#ffcc00','#996600']},
-  {n:'🩵 Лёд',       c:['#cceeff','#99ddff','#66ccff','#33aaee','#0077cc']}
+  {n:'💚 Matrix',    c:['#003300','#00ff00','#88ff88','#00ff00','#003300']},
+  {n:'☕ Espresso',  c:['#4a2c00','#8b5e3c','#c4a882','#e8d5b7']},
+  {n:'🎃 Хэллоуин', c:['#4a0080','#aa3300','#ff6b00','#ffcc00']},
+  {n:'🌙 Ночь',      c:['#10003d','#3300aa','#6600ff','#aa66ff','#ddbcff']},
+  {n:'🎨 Художник',  c:['#fc5c7d','#6a82fb','#43e97b','#fa8231']},
+  {n:'🟡 Золото',    c:['#996600','#ffcc00','#ffe066','#ffcc00','#996600']},
+  {n:'🩵 Лёд',       c:['#cceeff','#99ddff','#66ccff','#33aaee','#0077cc']},
+  {n:'🌺 Тропики',   c:['#ff6b35','#f7931e','#ffcd3c','#00d2ff','#3a7bd5']},
+  {n:'🍇 Фиолет',    c:['#240046','#7b2d8b','#c77dff','#e0aaff']},
+  {n:'🌿 Мох',       c:['#1b4332','#40916c','#95d5b2','#d8f3dc']},
 ];
 
 const TEXT_PRESETS_NO_CLAN = [
@@ -328,52 +506,500 @@ const TEXT_PRESETS_CLAN = [
   {n:'Фейк мут', t:'!&a &f &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &c &a &a&b &l &f &f&c[&] &6weeloser &eзамутил &cla0k &6за (&cпо фану&6) на &c6 ч'}
 ];
 
-function buildPresets(){
-  const g=document.getElementById('pgrid');
-  PRESETS.forEach(p=>{
-    const b=document.createElement('button');
-    b.className='preset';
-    const bar=p.c.map(c=>`<span style="background:${c}"></span>`).join('');
-    b.innerHTML=`<span>${p.n}</span><div class="pbar">${bar}</div>`;
-    b.onclick=()=>setColors(p.c);
+/* ==================== LOCAL STORAGE ==================== */
+function loadTemplates() {
+  try { return JSON.parse(localStorage.getItem('mc_templates') || '[]'); }
+  catch { return []; }
+}
+function saveTemplates(arr) {
+  localStorage.setItem('mc_templates', JSON.stringify(arr));
+}
+function getTemplates() { return loadTemplates(); }
+
+/* ==================== BUILD UI ==================== */
+function buildPresets() {
+  const g = document.getElementById('pgrid');
+  PRESETS.forEach(p => {
+    const b = document.createElement('button');
+    b.className = 'preset';
+    const bar = p.c.map(c => `<span style="background:${c}"></span>`).join('');
+    b.innerHTML = `<span>${p.n}</span><div class="pbar">${bar}</div>`;
+    b.onclick = () => setColors(p.c);
     g.appendChild(b);
   });
+}
+
+function buildMcPalette() {
+  const g = document.getElementById('mcPalette');
+  g.innerHTML = '';
+  MC_COLORS.forEach(mc => {
+    const wrap = document.createElement('div');
+    const sw = document.createElement('div');
+    sw.className = 'mc-swatch';
+    sw.style.background = mc.hex;
+    sw.title = `${mc.name} (&${mc.code})`;
+    sw.dataset.code = mc.code;
+    sw.dataset.hex = mc.hex;
+    sw.onclick = () => selectMcColor(mc.code, mc.hex, sw);
+    const lb = document.createElement('div');
+    lb.className = 'mc-swatch-label';
+    lb.textContent = `&${mc.code}`;
+    wrap.appendChild(sw);
+    wrap.appendChild(lb);
+    g.appendChild(wrap);
+  });
+}
+
+function selectMcColor(code, hex, el) {
+  document.querySelectorAll('.mc-swatch').forEach(s => s.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedMcColor = {code, hex};
+  update();
 }
 
 function setMode(m) {
   currentTextMode = m;
-  document.getElementById('mode0').classList.toggle('active', m === 0);
-  document.getElementById('mode1').classList.toggle('active', m === 1);
+  [0,1,'User'].forEach((x,i) => {
+    const id = i === 2 ? 'modeUser' : `mode${x}`;
+    document.getElementById(id).classList.toggle('active', i === m);
+  });
   document.getElementById('clanWarn').style.display = m === 1 ? 'block' : 'none';
   buildTextPresets();
 }
 
-function buildTextPresets(){
-  const g=document.getElementById('tpgrid');
+function buildTextPresets() {
+  const g = document.getElementById('tpgrid');
+  const empty = document.getElementById('emptyUser');
   g.innerHTML = '';
-  const arr = currentTextMode === 0 ? TEXT_PRESETS_NO_CLAN : TEXT_PRESETS_CLAN;
-  
-  arr.forEach(p=>{
-    const b=document.createElement('button');
-    b.className='preset';
-    b.style.alignItems='center';
-    b.style.justifyContent='center';
-    b.style.padding='12px 10px';
-    b.style.textAlign='center';
-    b.innerHTML=`<span>${p.n}</span>`;
-    b.onclick=(e)=>copyToClipboard(p.t, e.currentTarget);
+  let arr;
+  if (currentTextMode === 2) {
+    const saved = getTemplates().filter(t => t.type === 'text');
+    if (saved.length === 0) { empty.style.display = 'block'; return; }
+    empty.style.display = 'none';
+    arr = saved.map(t => ({n: t.name, t: t.data}));
+  } else {
+    empty.style.display = 'none';
+    arr = currentTextMode === 0 ? TEXT_PRESETS_NO_CLAN : TEXT_PRESETS_CLAN;
+  }
+  arr.forEach(p => {
+    const b = document.createElement('button');
+    b.className = 'preset';
+    b.style.alignItems = 'center';
+    b.style.justifyContent = 'center';
+    b.style.padding = '12px 10px';
+    b.style.textAlign = 'center';
+    b.innerHTML = `<span>${p.n}</span>`;
+    b.onclick = e => copyToClipboard(p.t, e.currentTarget);
     g.appendChild(b);
   });
 }
 
-function copyToClipboard(str, btn) {
-  const el = document.createElement('textarea');
-  el.value = str;
-  document.body.appendChild(el);
-  el.select();
-  document.execCommand('copy');
-  document.body.removeChild(el);
+/* ==================== TEMPLATES MODAL ==================== */
+function openTplModal() {
+  renderTplList();
+  document.getElementById('tplModal').classList.remove('hidden');
+}
+function closeTplModal() {
+  document.getElementById('tplModal').classList.add('hidden');
+}
+function renderTplList() {
+  const list = document.getElementById('tplList');
+  const templates = getTemplates();
+  list.innerHTML = '';
+  if (templates.length === 0) {
+    list.innerHTML = '<div style="text-align:center;padding:20px;font-size:12px;color:var(--muted)">Нет сохранённых шаблонов</div>';
+    return;
+  }
+  templates.forEach((t, i) => {
+    const row = document.createElement('div');
+    row.className = 'tpl-row';
+    row.innerHTML = `
+      <span class="tpl-type ${t.type}">${t.type === 'color' ? '💜 Цвет' : '✦ Текст'}</span>
+      <span class="tpl-name">${t.name}</span>
+      <button class="tpl-apply" onclick="applyTemplate(${i})">Применить</button>
+      <button class="tpl-del" onclick="deleteTemplate(${i})">✕</button>
+    `;
+    list.appendChild(row);
+  });
+}
+function saveCurrentAsTemplate(type) {
+  const name = document.getElementById('tplName').value.trim();
+  if (!name) { alert('Введите название!'); return; }
+  const templates = getTemplates();
+  const data = type === 'color' ? JSON.stringify(colors) : document.getElementById('output').value;
+  templates.push({name, type, data});
+  saveTemplates(templates);
+  document.getElementById('tplName').value = '';
+  renderTplList();
+  if (currentTextMode === 2) buildTextPresets();
+}
+function applyTemplate(i) {
+  const t = getTemplates()[i];
+  if (t.type === 'color') {
+    setColors(JSON.parse(t.data));
+  } else {
+    copyToClipboard(t.data, null);
+  }
+  closeTplModal();
+}
+function deleteTemplate(i) {
+  const templates = getTemplates();
+  templates.splice(i, 1);
+  saveTemplates(templates);
+  renderTplList();
+  if (currentTextMode === 2) buildTextPresets();
+}
 
+/* ==================== PLAIN / NO FORMAT MODES ==================== */
+function togglePlainMode() {
+  plainMode = !plainMode;
+  document.getElementById('plainCard').style.display = plainMode ? 'block' : 'none';
+  document.getElementById('plainModeLabel').textContent = plainMode ? '✕ Выйти из обычного' : '🎨 Обычный цвет';
+  update();
+}
+function toggleNoFormat() {
+  noFormat = !noFormat;
+  document.getElementById('formatSection').style.display = noFormat ? 'none' : 'block';
+  document.getElementById('noFmtLabel').textContent = noFormat ? '✓ Форматирование вкл.' : '✕ Без форматирования';
+  if (noFormat) {
+    ['bold','italic','underline','strikethrough'].forEach(id => {
+      document.getElementById(id).checked = false;
+    });
+  }
+  update();
+}
+
+/* ==================== PIPETTE ==================== */
+function openPipette() {
+  document.getElementById('pipetteModal').classList.remove('hidden');
+}
+function closePipette() {
+  document.getElementById('pipetteModal').classList.add('hidden');
+}
+function addPickedColor() {
+  if (colors.length < 12) {
+    colors.push(pickedColor);
+    renderStops();
+    update();
+  }
+  closePipette();
+}
+
+// Paste image
+document.addEventListener('paste', e => {
+  if (document.getElementById('pipetteModal').classList.contains('hidden')) return;
+  const items = e.clipboardData.items;
+  for (const item of items) {
+    if (item.type.startsWith('image/')) {
+      const blob = item.getAsFile();
+      loadImageToPipette(blob);
+      break;
+    }
+  }
+});
+
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+const pipCanvas = document.getElementById('pipetteCanvas');
+const pipCtx = pipCanvas.getContext('2d');
+
+dropZone.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) loadImageToPipette(file);
+});
+fileInput.addEventListener('change', () => {
+  if (fileInput.files[0]) loadImageToPipette(fileInput.files[0]);
+});
+
+function loadImageToPipette(file) {
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const img = new Image();
+    img.onload = () => {
+      pipCanvas.width = img.width;
+      pipCanvas.height = img.height;
+      pipCtx.drawImage(img, 0, 0);
+      pipCanvas.style.display = 'block';
+      dropZone.style.display = 'none';
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+pipCanvas.addEventListener('mousemove', e => {
+  const rect = pipCanvas.getBoundingClientRect();
+  const scaleX = pipCanvas.width / rect.width;
+  const scaleY = pipCanvas.height / rect.height;
+  const x = Math.floor((e.clientX - rect.left) * scaleX);
+  const y = Math.floor((e.clientY - rect.top) * scaleY);
+  const px = pipCtx.getImageData(x, y, 1, 1).data;
+  const hex = '#' + [px[0],px[1],px[2]].map(v=>v.toString(16).padStart(2,'0')).join('');
+  pickedColor = hex;
+  document.getElementById('pickedSwatch').style.background = hex;
+  document.getElementById('pickedHex').textContent = hex.toUpperCase();
+  document.getElementById('pickedRgb').textContent = `rgb(${px[0]},${px[1]},${px[2]})`;
+});
+pipCanvas.addEventListener('click', addPickedColor);
+
+/* ==================== STOPS ==================== */
+function renderStops() {
+  const el = document.getElementById('stops');
+  el.innerHTML = '';
+  colors.forEach((c, i) => {
+    const row = document.createElement('div');
+    row.className = 'srow'; row.draggable = true; row.dataset.i = i;
+    row.innerHTML = `
+      <div class="sw" style="background:${c}">
+        <input type="color" value="${c}" oninput="colors[${i}]=this.value;document.getElementById('h${i}').value=this.value.toUpperCase();updGbar();update()">
+      </div>
+      <input id="h${i}" class="hx" value="${c.toUpperCase()}" oninput="onHex(${i},this.value)" maxlength="7" spellcheck="false">
+      <button class="sdel" onclick="remStop(${i})">✕</button>`;
+    row.addEventListener('dragstart', e => { e.dataTransfer.setData('i', i); row.classList.add('drag'); });
+    row.addEventListener('dragend', () => row.classList.remove('drag'));
+    row.addEventListener('dragover', e => e.preventDefault());
+    row.addEventListener('drop', e => {
+      e.preventDefault();
+      const f = +e.dataTransfer.getData('i');
+      if (f === i) return;
+      const t = colors[f]; colors[f] = colors[i]; colors[i] = t;
+      renderStops(); update();
+    });
+    el.appendChild(row);
+  });
+  document.getElementById('dc').textContent = `${colors.length} / 12`;
+  updGbar();
+}
+function onHex(i, v) { if (/^#[0-9a-fA-F]{6}$/.test(v)) { colors[i] = v; renderStops(); update(); } }
+function updGbar() {
+  const b = document.getElementById('gbar');
+  b.style.background = colors.length < 2 ? colors[0] : `linear-gradient(to right,${colors.join(',')})`;
+}
+function addStop() { if (colors.length < 12) { colors.push('#ffffff'); renderStops(); update(); } }
+function remStop(i) { if (colors.length > 2) { colors.splice(i, 1); renderStops(); update(); } }
+function setColors(nc) { colors = [...nc]; renderStops(); update(); }
+
+/* ==================== LERP ==================== */
+const h2r = h => ({ r: parseInt(h.slice(1,3),16), g: parseInt(h.slice(3,5),16), b: parseInt(h.slice(5,7),16) });
+const r2h = (r,g,b) => '#' + [r,g,b].map(x => Math.max(0,Math.min(255,Math.round(x))).toString(16).padStart(2,'0')).join('');
+function lerp(list, f) {
+  if (f <= 0) return list[0]; if (f >= 1) return list[list.length-1];
+  const seg = 1/(list.length-1);
+  const i = Math.min(Math.floor(f/seg), list.length-2);
+  const t = (f - i*seg)/seg, a = list[i], b = list[i+1];
+  return { r: a.r+(b.r-a.r)*t, g: a.g+(b.g-a.g)*t, b: a.b+(b.b-a.b)*t };
+}
+
+/* ==================== READABILITY ==================== */
+function calcReadability(html) {
+  // Parse spans and calculate average luminance weighted by formatting
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  const spans = tmp.querySelectorAll('span[style]');
+  if (!spans.length) return 0;
+
+  let totalScore = 0;
+  let count = 0;
+  spans.forEach(span => {
+    const m = span.style.color.match(/\d+/g);
+    if (!m) return;
+    const r = +m[0]/255, g = +m[1]/255, b = +m[2]/255;
+    // Relative luminance
+    const lum = 0.2126*r + 0.7152*g + 0.0722*b;
+    // Score: distance from 0 and 1 extremes, bonus for bold
+    let score = Math.min(lum * 1.8, 1.0);
+    if (span.style.fontWeight === 'bold' || span.style.fontWeight === '700') score = Math.min(score * 1.25, 1);
+    totalScore += score;
+    count++;
+  });
+  return count ? Math.round((totalScore / count) * 100) : 0;
+}
+
+function updateReadability(html, bold) {
+  const bar = document.getElementById('rbar');
+  const score = document.getElementById('rscore');
+  let s = calcReadability(html);
+  if (bold) s = Math.min(s + 10, 100);
+  const color = s < 30 ? '#ff5252' : s < 55 ? '#ffcc44' : '#2dd4a0';
+  bar.style.width = s + '%';
+  bar.style.background = color;
+  score.textContent = s + '%';
+  score.style.color = color;
+}
+
+/* ==================== MAIN UPDATE ==================== */
+function update() {
+  const txt = document.getElementById('mainText').value;
+  const pfxRaw = document.getElementById('prefix').value;
+  // Ensure trailing space for prefix if non-empty and doesn't end in space
+  const pfx = pfxRaw && !pfxRaw.endsWith(' ') ? pfxRaw + ' ' : pfxRaw;
+
+  const bold = !noFormat && document.getElementById('bold').checked;
+  const italic = !noFormat && document.getElementById('italic').checked;
+  const underline = !noFormat && document.getElementById('underline').checked;
+  const strikethrough = !noFormat && document.getElementById('strikethrough').checked;
+
+  const pv = document.getElementById('preview');
+  const out = document.getElementById('output');
+  const copyBtn = document.getElementById('copyBtn');
+
+  let customLimit = parseInt(document.getElementById('limit').value) || 256;
+  if (customLimit < 1) customLimit = 1;
+
+  // Format suffix: bold, italic, underline, strikethrough
+  let fmt = '';
+  if (bold) fmt += '&l';
+  if (italic) fmt += '&o';
+  if (underline) fmt += '&n';
+  if (strikethrough) fmt += '&m';
+
+  pv.style.fontWeight = bold ? 'bold' : 'normal';
+  pv.style.fontStyle = italic ? 'italic' : 'normal';
+  pv.style.textDecoration = (underline ? 'underline ' : '') + (strikethrough ? 'line-through' : '');
+
+  if (!txt) {
+    out.value = ''; pv.innerHTML = '';
+    out.classList.remove('error');
+    setCtr(0, customLimit, false);
+    updateReadability('', false);
+    return;
+  }
+
+  // PLAIN MODE: use MC color codes only
+  if (plainMode && selectedMcColor) {
+    const code = `${pfx}&${selectedMcColor.code}${fmt}${txt}`;
+    pv.innerHTML = `<span style="color:${selectedMcColor.hex};font-weight:${bold?'bold':'normal'};font-style:${italic?'italic':'normal'};text-decoration:${(underline?'underline ':'')+(strikethrough?'line-through':'')}">${txt}</span>`;
+    out.value = code;
+    const over = code.length > customLimit;
+    setCtr(code.length, customLimit, over);
+    updateReadability(pv.innerHTML, bold);
+    out.classList.toggle('error', over);
+    copyBtn.classList.toggle('disabled', over);
+    copyBtn.textContent = over ? 'ТЕКСТ СЛИШКОМ ДЛИННЫЙ' : 'Копировать код';
+    return;
+  }
+
+  // GRADIENT MODE
+  const visChars = txt.replace(/ /g, '').length;
+  const tsz = 8 + fmt.length; // &#RRGGBB + format codes
+  let maxColors = Math.floor((customLimit - pfx.length - txt.length) / tsz);
+  let limitExceeded = false;
+
+  if (customLimit - pfx.length - txt.length < 0) {
+    limitExceeded = true; maxColors = 0;
+  } else if (maxColors > visChars) {
+    maxColors = visChars;
+  } else if (maxColors < 0) {
+    maxColors = 0;
+  }
+
+  // SMART TRIMMING: place colors at optimal positions
+  const placeColor = new Array(visChars).fill(false);
+  if (maxColors > 0) {
+    if (maxColors >= visChars) {
+      placeColor.fill(true);
+    } else {
+      // Avoid coloring spaces/punctuation first (smart)
+      const priorities = [];
+      let vi2 = 0;
+      for (let i = 0; i < txt.length; i++) {
+        const c = txt[i];
+        if (c === ' ') continue;
+        const isPunct = /[.,!?;:_\-]/.test(c);
+        priorities.push({vi: vi2, weight: isPunct ? 0.3 : 1});
+        vi2++;
+      }
+      priorities.sort((a,b) => b.weight - a.weight);
+      const chosen = new Set(priorities.slice(0, maxColors).map(p => p.vi));
+      for (let k = 0; k < visChars; k++) {
+        if (chosen.has(k)) placeColor[k] = true;
+      }
+    }
+  }
+
+  const rgb = colors.map(h2r);
+  let code = pfx;
+  let html = '';
+  let vi = 0;
+  let ch = '#ffffff';
+
+  for (let i = 0; i < txt.length; i++) {
+    const c = txt[i];
+    if (c === ' ') {
+      code += c;
+      html += `<span style="margin:0 3px"> </span>`;
+      continue;
+    }
+    if (placeColor[vi]) {
+      const col = lerp(rgb, vi / Math.max(1, visChars - 1));
+      ch = r2h(col.r, col.g, col.b);
+      code += `&#${ch.slice(1)}${fmt}`;
+    }
+    code += c;
+    const fdec = (underline?'underline ':'')+(strikethrough?'line-through':'');
+    html += `<span style="color:${ch};font-weight:${bold?'bold':'normal'};font-style:${italic?'italic':'normal'};text-decoration:${fdec}">${c}</span>`;
+    vi++;
+  }
+
+  pv.innerHTML = html;
+  out.value = code;
+  const l = txt.length;
+  pv.style.fontSize = l > 80 ? '0.75rem' : l > 55 ? '0.92rem' : l > 35 ? '1.1rem' : '1.4rem';
+
+  if (code.length > customLimit) limitExceeded = true;
+  setCtr(code.length, customLimit, limitExceeded);
+  updateReadability(html, bold);
+
+  if (limitExceeded) {
+    out.classList.add('error');
+    copyBtn.classList.add('disabled');
+    copyBtn.textContent = 'ТЕКСТ СЛИШКОМ ДЛИННЫЙ';
+  } else {
+    out.classList.remove('error');
+    copyBtn.classList.remove('disabled');
+    copyBtn.textContent = 'Копировать код';
+  }
+}
+
+function setCtr(n, limit, over) {
+  const c = document.getElementById('ctr'), p = document.getElementById('pill');
+  c.innerHTML = `${n}<span>/${limit}</span>`;
+  c.className = 'ctr' + (over ? ' over' : n >= limit - 10 ? ' maxed' : '');
+  p.textContent = over ? 'ЛИМИТ ПРЕВЫШЕН' : n >= limit - 10 ? 'МАКСИМУМ' : 'ГОТОВО';
+  p.className = 'pill' + (over ? ' warn' : '');
+}
+
+function doCopy(e) {
+  const out = document.getElementById('output');
+  if (out.classList.contains('error')) return;
+  navigator.clipboard.writeText(out.value).catch(() => {
+    out.select(); document.execCommand('copy');
+  });
+  const b = e.currentTarget, t = b.textContent;
+  b.textContent = '✓ Скопировано!';
+  b.style.background = 'var(--ok)';
+  b.style.color = '#001a10';
+  setTimeout(() => {
+    if (!out.classList.contains('error')) b.textContent = 'Копировать код';
+    b.style.background = ''; b.style.color = '';
+  }, 1300);
+}
+
+function copyToClipboard(str, btn) {
+  navigator.clipboard.writeText(str).catch(() => {
+    const el = document.createElement('textarea');
+    el.value = str;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+  });
+  if (!btn) return;
   const old = btn.innerHTML;
   btn.innerHTML = '<span>✓ Скопировано!</span>';
   btn.style.borderColor = 'var(--ok)';
@@ -385,185 +1011,17 @@ function copyToClipboard(str, btn) {
   }, 1200);
 }
 
-function renderStops(){
-  const el=document.getElementById('stops');
-  el.innerHTML='';
-  colors.forEach((c,i)=>{
-    const row=document.createElement('div');
-    row.className='srow';row.draggable=true;row.dataset.i=i;
-    row.innerHTML=`
-      <div class="sw" style="background:${c}">
-        <input type="color" value="${c}" oninput="colors[${i}]=this.value;document.getElementById('h${i}').value=this.value.toUpperCase();updGbar();update()">
-      </div>
-      <input id="h${i}" class="hx" value="${c.toUpperCase()}" oninput="onHex(${i},this.value)" maxlength="7" spellcheck="false">
-      <button class="sdel" onclick="remStop(${i})">✕</button>`;
-    row.addEventListener('dragstart',e=>{e.dataTransfer.setData('i',i);row.classList.add('drag')});
-    row.addEventListener('dragend',()=>row.classList.remove('drag'));
-    row.addEventListener('dragover',e=>e.preventDefault());
-    row.addEventListener('drop',e=>{
-      e.preventDefault();
-      const f=+e.dataTransfer.getData('i');
-      if(f===i)return;
-      const t=colors[f];colors[f]=colors[i];colors[i]=t;
-      renderStops();update();
-    });
-    el.appendChild(row);
-  });
-  document.getElementById('dc').textContent=`${colors.length} / 12`;
-  updGbar();
-}
+// Close modals on overlay click
+document.getElementById('pipetteModal').addEventListener('click', function(e) {
+  if (e.target === this) closePipette();
+});
+document.getElementById('tplModal').addEventListener('click', function(e) {
+  if (e.target === this) closeTplModal();
+});
 
-function onHex(i,v){if(/^#[0-9a-fA-F]{6}$/.test(v)){colors[i]=v;renderStops();update()}}
-function updGbar(){
-  const b=document.getElementById('gbar');
-  b.style.background=colors.length<2?colors[0]:`linear-gradient(to right,${colors.join(',')})`;
-}
-function addStop(){if(colors.length<12){colors.push('#ffffff');renderStops();update()}}
-function remStop(i){if(colors.length>2){colors.splice(i,1);renderStops();update()}}
-function setColors(nc){colors=[...nc];renderStops();update()}
-
-const h2r=h=>({r:parseInt(h.slice(1,3),16),g:parseInt(h.slice(3,5),16),b:parseInt(h.slice(5,7),16)});
-const r2h=(r,g,b)=>'#'+[r,g,b].map(x=>Math.max(0,Math.min(255,Math.round(x))).toString(16).padStart(2,'0')).join('');
-function lerp(list,f){
-  if(f<=0)return list[0];if(f>=1)return list[list.length-1];
-  const seg=1/(list.length-1);
-  const i=Math.min(Math.floor(f/seg),list.length-2);
-  const t=(f-i*seg)/seg,a=list[i],b=list[i+1];
-  return{r:a.r+(b.r-a.r)*t,g:a.g+(b.g-a.g)*t,b:a.b+(b.b-a.b)*t};
-}
-
-function update(){
-  const txt = document.getElementById('mainText').value;
-  const pfx = document.getElementById('prefix').value;
-  const bold = document.getElementById('bold').checked;
-  const pv = document.getElementById('preview');
-  const out = document.getElementById('output');
-  const copyBtn = document.getElementById('copyBtn');
-  
-  // Custom limit parsing
-  let customLimit = parseInt(document.getElementById('limit').value) || 256;
-  if(customLimit < 1) customLimit = 1;
-
-  const bt = bold ? '&l' : '';
-  const tsz = 8 + bt.length; // Length of &#RRGGBB + optional &l
-  
-  pv.style.fontWeight = bold ? 'bold' : 'normal';
-  
-  if(!txt) {
-    out.value = '';
-    pv.innerHTML = '';
-    out.classList.remove('error');
-    setCtr(0, customLimit, false);
-    return;
-  }
-
-  // Optimize colors strict fitting
-  const visChars = txt.replace(/ /g, '').length;
-  let maxColors = Math.floor((customLimit - pfx.length - txt.length) / tsz);
-  let limitExceeded = false;
-
-  // Check if text alone breaks limit
-  if (customLimit - pfx.length - txt.length < 0) {
-      limitExceeded = true;
-      maxColors = 0;
-  } else if (maxColors > visChars) {
-      maxColors = visChars;
-  } else if (maxColors < 0) {
-      maxColors = 0;
-  }
-
-  // Distribute colors across available slots perfectly
-  const placeColor = new Array(visChars).fill(false);
-  if (maxColors > 0) {
-      if (maxColors >= visChars) {
-          placeColor.fill(true);
-      } else {
-          for (let k = 0; k < maxColors; k++) {
-              const idx = Math.floor(k * visChars / maxColors);
-              placeColor[idx] = true;
-          }
-      }
-  }
-
-  const rgb = colors.map(h2r);
-  let code = pfx;
-  let html = '';
-  let vi = 0; // visible char index
-  let ch = '#ffffff';
-  
-  for(let i=0; i<txt.length; i++){
-    const c = txt[i];
-    if(c === ' '){
-        code += c; // Minecraft supports persisting color over spaces
-        html += `<span style="margin:0 3px"> </span>`;
-        continue;
-    }
-    
-    // Inject color tag if slot allows it
-    if(placeColor[vi]) {
-        const col = lerp(rgb, vi / Math.max(1, visChars - 1));
-        ch = r2h(col.r, col.g, col.b);
-        code += `&#${ch.slice(1)}${bt}`;
-    }
-    
-    code += c;
-    html += `<span style="color:${ch}">${c}</span>`;
-    vi++;
-  }
-  
-  pv.innerHTML = html;
-  out.value = code;
-  const l = txt.length;
-  pv.style.fontSize = l > 80 ? '0.78rem' : l > 55 ? '0.95rem' : l > 35 ? '1.15rem' : '1.48rem';
-  
-  if (code.length > customLimit) {
-      limitExceeded = true;
-  }
-  
-  setCtr(code.length, customLimit, limitExceeded);
-
-  // Strict Copy UI Toggle
-  if(limitExceeded) {
-      out.classList.add('error');
-      copyBtn.classList.add('disabled');
-      copyBtn.textContent = 'ТЕКСТ СЛИШКОМ ДЛИННЫЙ';
-  } else {
-      out.classList.remove('error');
-      copyBtn.classList.remove('disabled');
-      copyBtn.textContent = 'Копировать код';
-  }
-}
-
-function setCtr(n, limit, over){
-  const c = document.getElementById('ctr'), p = document.getElementById('pill');
-  c.innerHTML = `${n}<span>/${limit}</span>`;
-  c.className = 'ctr' + (over ? ' over' : n >= limit - 10 ? ' maxed' : '');
-  p.textContent = over ? 'ЛИМИТ ПРЕВЫШЕН' : n >= limit - 10 ? 'МАКСИМУМ' : 'ГОТОВО';
-  p.className = 'pill' + (over ? ' warn' : '');
-}
-
-function doCopy(e){
-  const out = document.getElementById('output');
-  if (out.classList.contains('error')) return; // Strict block copy on error
-  
-  out.select();
-  try { document.execCommand('copy') } catch{}
-  
-  const b = e.currentTarget, t = b.textContent;
-  b.textContent = '✓ Скопировано!';
-  b.style.background = 'var(--ok)';
-  b.style.color = '#001a10';
-  
-  setTimeout(() => {
-    if(!out.classList.contains('error')){
-        b.textContent = 'Копировать код';
-    }
-    b.style.background = '';
-    b.style.color = '';
-  }, 1300);
-}
-
+/* ==================== INIT ==================== */
 buildPresets();
+buildMcPalette();
 buildTextPresets();
 renderStops();
 update();
