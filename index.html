@@ -133,6 +133,49 @@ header{display:flex;align-items:center;justify-content:space-between;padding:28p
 .copybtn:active:not(.disabled){transform:scale(.96)}
 .copybtn.disabled{background:var(--s2);color:var(--warn);border:1px solid var(--warn);cursor:not-allowed;box-shadow:none;opacity:0.8}
 
+/* Mode Switch UI */
+.mode-switch {
+  display: flex;
+  background: var(--s2);
+  border: 1px solid var(--b1);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 12px;
+}
+.mbtn {
+  flex: 1;
+  padding: 10px 12px;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-family: 'Manrope', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.mbtn.active {
+  background: var(--s3);
+  color: var(--txt);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+.mbtn:hover:not(.active) {
+  color: var(--txt);
+}
+.clan-warn {
+  font-size: 10px;
+  color: var(--warn);
+  background: rgba(255,82,82,0.1);
+  border: 1px solid rgba(255,82,82,0.2);
+  padding: 10px 14px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  text-align: center;
+  line-height: 1.5;
+  font-weight: 600;
+}
+
 ::-webkit-scrollbar{width:6px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--b2);border-radius:6px}
@@ -202,6 +245,11 @@ header{display:flex;align-items:center;justify-content:space-between;padding:28p
 
       <div class="card">
         <div class="ctitle">Копирование (Клик = Буфер обмена)</div>
+        <div class="mode-switch">
+          <button id="mode0" class="mbtn active" onclick="setMode(0)">Без клана</button>
+          <button id="mode1" class="mbtn" onclick="setMode(1)">Я состою в клане</button>
+        </div>
+        <div id="clanWarn" class="clan-warn" style="display:none;">Сократите название клана до 3 символов, что бы текст конкретно отображался через /clan rename [name]</div>
         <div class="pgrid" id="tpgrid"></div>
       </div>
 
@@ -229,6 +277,7 @@ header{display:flex;align-items:center;justify-content:space-between;padding:28p
 
 <script>
 let colors=['#bc00ff','#ff00ff','#ff8800'];
+let currentTextMode = 0; // 0 = Без клана, 1 = Я состою в клане
 
 const PRESETS=[
   {n:'🌈 Радуга',    c:['#ff0000','#ff8c00','#ffff00','#00e676','#00b0ff','#7c4dff','#ff00ff']},
@@ -257,13 +306,26 @@ const PRESETS=[
   {n:'🩵 Лёд',       c:['#cceeff','#99ddff','#66ccff','#33aaee','#0077cc']}
 ];
 
-const TEXT_PRESETS=[
-  {n:'👑 Князь (Я)', t:'!&e &d &e &d &e &d &e &d &e &4 &4 &4 &f &f &f &f &f &f &f &b &f &b &f &b &f &b &f &b &c &e &f &e &f &e &f &c &e &b &d &b &a &d &3&6&f&#fc97fc[&#a80000&lКнязь &eweeloser &7> &eЯ&#fc97fc] qq'},
-  {n:'💸 Перевод', t:'!&e &d &e &d &e &d &e &d &e &4 &4 &4 &f &f &f &f &f &f &f &b &f &b &f &b &f &b &f &b &c &e &f &e &f &e &f &e &f &c &f &e &b &a &d &f&4 &f &3&6&f&a[$] &fОт игрока &ename &fполучено &a+$1.000.000'},
-  {n:'⚡ Запрос ТП', t:'!&e &d &e &d &e &d &e &d &e &4 &4 &4 &f &f &f &f &f &f &f &b &f &b &f &b &f &b &f &b &c &e &f &e &f &e &f &e &f &c &e &b &d &b &a &f &d &c &e &d&6 [&] &fВы отправили запaрос на телепортацию к &ename&f. &e &d &e &d &e &d &e &4 &4 &4 &b &4[Отменить телепорт]'},
-  {n:'📶 Выс. Пинг', t:'!&0acacacacacacacacacacacacacacacacaaccacacacacccacacaca&aВаш пинг: &e2149. &e&d &e &d &e &d &e &d &e &4 &4 &4 &f &f &f &f &f &f &f &b &f &b &f &b &f &b &f &b &c &e &f &e &f &e &f &e &f &c &b &d &e &b &d &b &a &d &4 &6 &3 &4&d &b &7Отключение от сервера...'},
-  {n:'💤 AFK', t:'!&0 &e &d &e &d &e &d &e &d &e &4 &4 &4 &f &f &f &f &f &f &f &b &f &b &f &b &f &b &f &b &c &e &f &e &f &e &f &e &f &c &e &b &d &b &a &d &4 &6 &3 &4&d &7Вы отошли.'},
-  {n:'🛒 Фейк Покупка', t:'!&e &d &e &d &e &d &e &d &e &4 &4 &4 &f &f &f &f &f &f &f &b &f &b &f &b &f &b &f &b &c &e &f &e &f &e &f &e &f &c &e &b &d &b &a &f &d &d &d &f&4 &f&6 &3&#fc6500[&]&f У Вас купили &#fc6500Незеритовый Меч &fза &e$10 &fна &e/ah'}
+const TEXT_PRESETS_NO_CLAN = [
+  {n:'Фейк Лс', t:'!&e &d &e &d &e &d &e &d &e &4 &4 &4 &f &f &f &f &f &f &f &b &f &b &f &b &f &b &f &b &c &e &f &e &f &e &f &c &e &b &d &b&a &d &3&6&f&#fc97fc[&#a80000&lКнязь &eweeloser &7> &eЯ&#fc97fc] qq'},
+  {n:'Фейк перевод', t:'!&e &d &e &d &e &d &e &d &e &4 &4 &4 &f &f &f &f &f &f &f &b &f &b &f &b &f &b &f &b &c &e &f &e &f &e &f &e &f &c &f &e &b &a &d &f&4 &f &3&6&f&a[$] &fОт игрока &eweeloser &fполучено &a+$1.000.000'},
+  {n:'Тп', t:'!&4 &4 &f &f &f &f &f &f &f &b &f &b &f &b &f &b &c &e &f &f &a &c &a&e &f &f &f &e &f &c &e &b &d &b &e &c &a &b &f &f &d &c &e &d&6 [&] &fВы отправили запaрос на телепортацию к &eweeloser&f. &e &d &e &e &f &a &f &4[Отменить телепорт]'},
+  {n:'Пинг', t:'!&0acacacacacacacacacacacacacacacacaaccacacacacccacacaca&aВаш пинг: &e2149. &e&d &e &d &e &d &e &d &e &4 &4 &4 &f &f &f &f &f &f &f &b &f &b &f &b &f &b &f &b &c &e &f &e &f &e &f &e &f &c &b &d &e &b &d &b &a &d &4 &6 &3 &4&d &b &7Отключение от сервера...'},
+  {n:'Афк', t:'!&0 &e &d &e &d &e &d &e &d &e &4 &4 &4 &f &f &f &f &f &f &f &b &f &b &f &b &f &b &f &b &c &e &f &e &f &e &f &e &f &c &e &b &d &4 &6 &3 &7Вы отошли.'},
+  {n:'Фейк покупка', t:'!&e &d &e &d &e &d &e &d &e &4 &4 &4 &f &f &f &f &f &f &f &b &f &b &f &b &f &b &f &b &c &e &f &e &f &e &f &e &f &c &e&d &b &d &d &f&6 &3&#fc6500[&]&f У Вас купили &#fc6500Незеритовый Меч &fза &e$10 &fна &e/ah'},
+  {n:'Фейк бан', t:'!&a &a &a &a &f &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &c &a &a &a &f &b &l &f &f&c[&] &6weeloser &eзабанен &c[Подробнее]'},
+  {n:'Фейк мут', t:'!&a &a &a &a &f &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &c &a &a &a &f &b &l &f &f&c[&] &6weeloser &eзамутил &cla0k &6за (&cПо фану&6) на &c6 ч'}
+];
+
+const TEXT_PRESETS_CLAN = [
+  {n:'Фейк лс', t:'!&d &e &d &e &d &e &4 &4 &4 &f &f &f &f &f &f &f &b &f &b &f &b &f &b &f &b &c &e &f &e &f &e &f &c &e &b &d &b&a &d &3&6&f&#fc97fc[&#a80000&lКнязь &eweeloser &7> &eЯ&#fc97fc] qq'},
+  {n:'Фейк перевод', t:'!&d &e &d &e &d &e &4 &4 &4 &f &f &f &f &f &f &f &b &f &b &f &b &f &b &f &b &c &e &f &e &f &e &f &e &f &e &b &a &d&3&6&f&a[$] &fОт игрока &eweeloser &fполучено &a+$1.000.000'},
+  {n:'Тп', t:'!&f &f &f &f &f &f &b &f &b &f &b &f &b &c &e &f &f &a &c &a&e &f &f &f &e &f &c &a &b &f &f &d &b &f &l &d &d&6 [&] &fВы отправили запaрос на телепортацию к &eweeloser&f. &e &d &e &e &a &f &4[Отменить телепорт]'},
+  {n:'Пинг', t:'!&0acacacacacacacacacacacacacacacacaaccacacacacccacacaca&aВаш пинг: &e2149. &e&d &e &d &e &d &e &d &e &4 &4 &4 &f &f &f &f &f &f &f &b &f &b &f &b &f &b &f &b &c &e &f &e &f &e &f &e &f &c &b &d &e &b &d &b &a &d &4 &6 &3 &4&d &b &7Отключение от сервера...'},
+  {n:'Афк', t:'!&0&d &e &d &e &d &e &4 &4 &4 &f &f &f &f &f &f &f &b &f &b &f &b &f &b &f &b &c &e &f &e &f &e &f &e &f &c &e &b &d &7Вы отошли.'},
+  {n:'Фейк покупка', t:'!&d &e &d &e &d &e &4 &4 &4 &f &f &f &f &f &f &f &b &f &b &f &b &f &b &f &b &c &e &f &e &f &e &f &e &f &c &e&d &b &f&6 &3&#fc6500[&]&f У Вас купили &#fc6500Незеритовый Меч &fза &e$10 &fна &e/ah'},
+  {n:'Фейк бан', t:'!&a&a&a&a &f &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &c &f &b &l &f &f&c[&] &6weeloser &eзабанен &c[Подробнее]'},
+  {n:'Фейк мут', t:'!&a &f &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &a &c &a &a&b &l &f &f&c[&] &6weeloser &eзамутил &cla0k &6за (&cпо фану&6) на &c6 ч'}
 ];
 
 function buildPresets(){
@@ -278,10 +340,20 @@ function buildPresets(){
   });
 }
 
+function setMode(m) {
+  currentTextMode = m;
+  document.getElementById('mode0').classList.toggle('active', m === 0);
+  document.getElementById('mode1').classList.toggle('active', m === 1);
+  document.getElementById('clanWarn').style.display = m === 1 ? 'block' : 'none';
+  buildTextPresets();
+}
+
 function buildTextPresets(){
   const g=document.getElementById('tpgrid');
   g.innerHTML = '';
-  TEXT_PRESETS.forEach(p=>{
+  const arr = currentTextMode === 0 ? TEXT_PRESETS_NO_CLAN : TEXT_PRESETS_CLAN;
+  
+  arr.forEach(p=>{
     const b=document.createElement('button');
     b.className='preset';
     b.style.alignItems='center';
