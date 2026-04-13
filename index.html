@@ -222,21 +222,31 @@ header{display:flex;align-items:center;justify-content:space-between;padding:28p
 .tpl-apply{background:var(--acc);color:#fff;border:none;font-size:10px;font-weight:700;padding:5px 12px;border-radius:7px;cursor:pointer;transition:all .2s}
 .tpl-apply:hover{background:var(--acc2);color:#1a1040}
 
-/* plain color palette */
+/* plain color palette — display only */
 .mc-palette{display:grid;grid-template-columns:repeat(8,1fr);gap:5px;margin-bottom:12px}
-.mc-swatch{width:100%;aspect-ratio:1;border-radius:6px;border:1.5px solid transparent;cursor:pointer;transition:all .15s;position:relative}
-.mc-swatch:hover{transform:scale(1.15);border-color:rgba(255,255,255,.4);z-index:2}
-.mc-swatch.selected{border-color:#fff;box-shadow:0 0 8px rgba(255,255,255,.4);transform:scale(1.1)}
+.mc-swatch{width:100%;aspect-ratio:1;border-radius:6px;border:1.5px solid rgba(255,255,255,.08);position:relative;cursor:default}
 .mc-swatch-label{font-size:8px;text-align:center;margin-top:3px;color:var(--muted);font-family:'DM Mono',monospace}
 
 /* section divider */
 .sdivider{height:1px;background:var(--b1);margin:14px 0}
 
-/* format chips */
-.format-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.fchip{padding:5px 12px;border-radius:20px;border:1px solid var(--b2);background:var(--s2);font-size:10px;font-weight:700;color:var(--muted);cursor:pointer;transition:all .2s;font-family:'DM Mono',monospace}
-.fchip:hover{border-color:var(--b3);color:var(--txt)}
-.fchip.active{background:rgba(124,111,255,.15);border-color:var(--acc);color:var(--acc2)}
+/* format section animated collapse */
+#formatSection{
+  overflow:hidden;
+  transition:max-height .45s cubic-bezier(.4,0,.2,1), opacity .35s ease, transform .35s ease;
+  max-height:300px;
+  opacity:1;
+  transform:translateY(0);
+  transform-origin:top;
+}
+#formatSection.collapsed{
+  max-height:0;
+  opacity:0;
+  transform:translateY(-8px);
+}
+/* individual togrow stagger when collapsing */
+#formatSection .togrow{transition:opacity .2s, transform .2s}
+#formatSection.collapsed .togrow{opacity:0;transform:translateX(-6px)}
 
 ::-webkit-scrollbar{width:5px}
 ::-webkit-scrollbar-track{background:transparent}
@@ -375,7 +385,7 @@ header{display:flex;align-items:center;justify-content:space-between;padding:28p
       <div class="card" id="plainCard" style="display:none">
         <div class="ctitle">Стандартные цвета Minecraft</div>
         <div class="mc-palette" id="mcPalette"></div>
-        <div style="font-size:10px;color:var(--muted);text-align:center">Кликните для выбора цвета текста</div>
+        <div style="font-size:10px;color:var(--muted);text-align:center;margin-top:4px">Для ознакомления — стандартные 16 цветов Minecraft</div>
       </div>
 
     </div>
@@ -484,6 +494,22 @@ const PRESETS = [
   {n:'🌿 Мох',       c:['#1b4332','#40916c','#95d5b2','#d8f3dc']},
 ];
 
+/* Plain-mode presets — only standard MC color codes */
+const PLAIN_PRESETS = [
+  {n:'🌈 Радуга MC',   c:['#ff5555','#ffaa00','#ffff55','#55ff55','#55ffff','#5555ff','#ff55ff']},
+  {n:'🔥 Огонь MC',    c:['#aa0000','#ff5555','#ffaa00','#ffff55']},
+  {n:'🌊 Океан MC',    c:['#0000aa','#5555ff','#55ffff','#aaaaaa']},
+  {n:'🌿 Лес MC',      c:['#00aa00','#55ff55','#ffff55','#aaaaaa']},
+  {n:'🌸 Сакура MC',   c:['#ff55ff','#ffaa00','#ffffff','#ffff55']},
+  {n:'💜 Маджента MC', c:['#aa00aa','#ff55ff','#ffffff','#ff55ff']},
+  {n:'⚡ Гроза MC',    c:['#0000aa','#5555ff','#aaaaaa','#ffffff']},
+  {n:'🍀 Клевер MC',   c:['#00aa00','#55ff55','#55ffff','#5555ff']},
+  {n:'🟡 Золото MC',   c:['#aa0000','#ffaa00','#ffff55','#ffffff']},
+  {n:'🩵 Лёд MC',      c:['#aaaaaa','#55ffff','#ffffff','#5555ff']},
+  {n:'🩸 Кровь MC',    c:['#aa0000','#ff5555','#aaaaaa','#ffffff']},
+  {n:'🎃 Тыква MC',    c:['#aa0000','#ffaa00','#ffff55','#aa00aa']},
+];
+
 const TEXT_PRESETS_NO_CLAN = [
   {n:'Фейк Лс', t:'!&e &d &e &d &e &d &e &d &e &4 &4 &4 &f &f &f &f &f &f &f &b &f &b &f &b &f &b &f &b &c &e &f &e &f &e &f &c &e &b &d &b&a &d &3&6&f&#fc97fc[&#a80000&lКнязь &eweeloser &7> &eЯ&#fc97fc] qq'},
   {n:'Фейк перевод', t:'!&e &d &e &d &e &d &e &d &e &4 &4 &4 &f &f &f &f &f &f &f &b &f &b &f &b &f &b &f &b &c &e &f &e &f &e &f &e &f &c &f &e &b &a &d &f&4 &f &3&6&f&a[$] &fОт игрока &eweeloser &fполучено &a+$1.000.000'},
@@ -517,9 +543,10 @@ function saveTemplates(arr) {
 function getTemplates() { return loadTemplates(); }
 
 /* ==================== BUILD UI ==================== */
-function buildPresets() {
+function buildPresets(arr) {
   const g = document.getElementById('pgrid');
-  PRESETS.forEach(p => {
+  g.innerHTML = '';
+  (arr || PRESETS).forEach(p => {
     const b = document.createElement('button');
     b.className = 'preset';
     const bar = p.c.map(c => `<span style="background:${c}"></span>`).join('');
@@ -538,9 +565,6 @@ function buildMcPalette() {
     sw.className = 'mc-swatch';
     sw.style.background = mc.hex;
     sw.title = `${mc.name} (&${mc.code})`;
-    sw.dataset.code = mc.code;
-    sw.dataset.hex = mc.hex;
-    sw.onclick = () => selectMcColor(mc.code, mc.hex, sw);
     const lb = document.createElement('div');
     lb.className = 'mc-swatch-label';
     lb.textContent = `&${mc.code}`;
@@ -548,13 +572,6 @@ function buildMcPalette() {
     wrap.appendChild(lb);
     g.appendChild(wrap);
   });
-}
-
-function selectMcColor(code, hex, el) {
-  document.querySelectorAll('.mc-swatch').forEach(s => s.classList.remove('selected'));
-  el.classList.add('selected');
-  selectedMcColor = {code, hex};
-  update();
 }
 
 function setMode(m) {
@@ -655,11 +672,15 @@ function togglePlainMode() {
   plainMode = !plainMode;
   document.getElementById('plainCard').style.display = plainMode ? 'block' : 'none';
   document.getElementById('plainModeLabel').textContent = plainMode ? '✕ Выйти из обычного' : '🎨 Обычный цвет';
+  // Swap color presets
+  buildPresets(plainMode ? PLAIN_PRESETS : PRESETS);
   update();
 }
+
 function toggleNoFormat() {
   noFormat = !noFormat;
-  document.getElementById('formatSection').style.display = noFormat ? 'none' : 'block';
+  const sec = document.getElementById('formatSection');
+  sec.classList.toggle('collapsed', noFormat);
   document.getElementById('noFmtLabel').textContent = noFormat ? '✓ Форматирование вкл.' : '✕ Без форматирования';
   if (noFormat) {
     ['bold','italic','underline','strikethrough'].forEach(id => {
@@ -870,21 +891,7 @@ function update() {
     return;
   }
 
-  // PLAIN MODE: use MC color codes only
-  if (plainMode && selectedMcColor) {
-    const code = `${pfx}&${selectedMcColor.code}${fmt}${txt}`;
-    pv.innerHTML = `<span style="color:${selectedMcColor.hex};font-weight:${bold?'bold':'normal'};font-style:${italic?'italic':'normal'};text-decoration:${(underline?'underline ':'')+(strikethrough?'line-through':'')}">${txt}</span>`;
-    out.value = code;
-    const over = code.length > customLimit;
-    setCtr(code.length, customLimit, over);
-    updateReadability(pv.innerHTML, bold);
-    out.classList.toggle('error', over);
-    copyBtn.classList.toggle('disabled', over);
-    copyBtn.textContent = over ? 'ТЕКСТ СЛИШКОМ ДЛИННЫЙ' : 'Копировать код';
-    return;
-  }
-
-  // GRADIENT MODE
+  // GRADIENT MODE (works for both regular and plain — plain just uses MC-color presets)
   const visChars = txt.replace(/ /g, '').length;
   const tsz = 8 + fmt.length; // &#RRGGBB + format codes
   let maxColors = Math.floor((customLimit - pfx.length - txt.length) / tsz);
