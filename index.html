@@ -833,6 +833,18 @@ function addStop() { if (colors.length < 12) { colors.push('#ffffff'); renderSto
 function remStop(i) { if (colors.length > 2) { colors.splice(i, 1); renderStops(); update(); } }
 function setColors(nc) { colors = [...nc]; renderStops(); update(); }
 
+/* ==================== NEAREST MC COLOR ==================== */
+function nearestMcCode(hex) {
+  const {r, g, b} = h2r(hex);
+  let best = MC_COLORS[0], bestDist = Infinity;
+  for (const mc of MC_COLORS) {
+    const {r: mr, g: mg, b: mb} = h2r(mc.hex);
+    const d = (r-mr)**2 + (g-mg)**2 + (b-mb)**2;
+    if (d < bestDist) { bestDist = d; best = mc; }
+  }
+  return best;
+}
+
 /* ==================== LERP ==================== */
 const h2r = h => ({ r: parseInt(h.slice(1,3),16), g: parseInt(h.slice(3,5),16), b: parseInt(h.slice(5,7),16) });
 const r2h = (r,g,b) => '#' + [r,g,b].map(x => Math.max(0,Math.min(255,Math.round(x))).toString(16).padStart(2,'0')).join('');
@@ -921,7 +933,8 @@ function update() {
 
   // GRADIENT MODE (works for both regular and plain — plain just uses MC-color presets)
   const visChars = txt.replace(/ /g, '').length;
-  const tsz = 8 + fmt.length; // &#RRGGBB + format codes
+  // Plain mode uses &X (2 chars), hex mode uses &#RRGGBB (8 chars)
+  const tsz = (plainMode ? 2 : 8) + fmt.length;
   let maxColors = Math.floor((customLimit - pfx.length - txt.length) / tsz);
   let limitExceeded = false;
 
@@ -973,7 +986,13 @@ function update() {
     if (placeColor[vi]) {
       const col = lerp(rgb, vi / Math.max(1, visChars - 1));
       ch = r2h(col.r, col.g, col.b);
-      code += `&#${ch.slice(1)}${fmt}`;
+      if (plainMode) {
+        const mc = nearestMcCode(ch);
+        ch = mc.hex;
+        code += `&${mc.code}${fmt}`;
+      } else {
+        code += `&#${ch.slice(1)}${fmt}`;
+      }
     }
     code += c;
     const fdec = (underline?'underline ':'')+(strikethrough?'line-through':'');
